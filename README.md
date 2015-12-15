@@ -1,2 +1,2 @@
 # ftfms-db
-USAID Feed the Future Monitoring System Data Model
+Normalized data model to support reporting from the USAID Feed the Future Monitoring System
