@@ -106,7 +106,7 @@ INSERT INTO value (title, type) VALUES ('Actual', 'integer');
 -- populate edition table
 INSERT INTO edition (report_id, interval_range_id, year)
 	select report_id, 1 as interval_range_id,
-	regexp_split_to_table('2014; 2015; 2016; 2017; 2018', E'; ')::int AS year
+	regexp_split_to_table('2010', '2013', '2014; 2015; 2016; 2017; 2018', E'; ')::int AS year
 	from report;
 
 
@@ -177,3 +177,130 @@ SELECT  distinct(report_id), country.country_id, district.district_id, site_id
 	LEFT JOIN district ON (district.title = admin1)
 	LEFT JOIN site ON (site.title = admin2 AND site.district_id = district.district_id)
 	GROUP by 1,2,3,4;
+
+
+
+-- load data into data table
+
+-- load in data for target 2014
+-- value_id = 4 for target
+-- data is target_2014
+-- edition year is 2014
+INSERT INTO data (report_id, edition_id, indicator_id, value_id, data)
+SELECT r.report_id, e.edition_id, i.indicator_id, 4 as value_id, target_2014 as data
+FROM (
+	select implementing_mechanism, target_2014, regexp_split_to_array(indicator, ':')
+	from kenprojects_raw
+) AS dt(implementing_mechanism, target_2014, indicator)
+JOIN report r ON (r.title = dt.implementing_mechanism)
+JOIN edition e ON (e.report_id = r.report_id AND e.year = 2014)
+JOIN indicator i ON (i.title = dt.indicator[2]);
+
+
+
+-- load in data for actual 2014
+-- value_id = 3 for actual
+-- data is actual_2014
+-- edition year is 2014
+INSERT INTO data (report_id, edition_id, indicator_id, value_id, data)
+SELECT r.report_id, e.edition_id, i.indicator_id, 3 as value_id, actual_2014 as data
+FROM (
+	select implementing_mechanism, actual_2014, regexp_split_to_array(indicator, ':')
+	from kenprojects_raw
+) AS dt(implementing_mechanism, actual_2014, indicator)
+JOIN report r ON (r.title = dt.implementing_mechanism)
+JOIN edition e ON (e.report_id = r.report_id AND e.year = 2014)
+JOIN indicator i ON (i.title = dt.indicator[2]);
+
+
+
+-- load in data for target 2015
+-- value_id = 4 for target
+-- data is target_2015
+-- edition year is 2015
+INSERT INTO data (report_id, edition_id, indicator_id, value_id, data)
+SELECT r.report_id, e.edition_id, i.indicator_id, 4 as value_id, target_2015 as data
+FROM (
+	select implementing_mechanism, target_2015, regexp_split_to_array(indicator, ':')
+	from kenprojects_raw
+) AS dt(implementing_mechanism, target_2015, indicator)
+JOIN report r ON (r.title = dt.implementing_mechanism)
+JOIN edition e ON (e.report_id = r.report_id AND e.year = 2015)
+JOIN indicator i ON (i.title = dt.indicator[2]);
+
+
+
+-- load in data for actual 2015
+-- value_id = 3 for actual
+-- data is actual_2015
+-- edition year is 2015
+INSERT INTO data (report_id, edition_id, indicator_id, value_id, data)
+SELECT r.report_id, e.edition_id, i.indicator_id, 3 as value_id, actual_2015 as data
+FROM (
+	select implementing_mechanism, actual_2015, regexp_split_to_array(indicator, ':')
+	from kenprojects_raw
+) AS dt(implementing_mechanism, actual_2015, indicator)
+JOIN report r ON (r.title = dt.implementing_mechanism)
+JOIN edition e ON (e.report_id = r.report_id AND e.year = 2015)
+JOIN indicator i ON (i.title = dt.indicator[2]);
+
+
+
+-- load in data for target 2016
+-- value_id = 4 for target
+-- data is target_2016
+-- edition year is 2016
+INSERT INTO data (report_id, edition_id, indicator_id, value_id, data)
+SELECT r.report_id, e.edition_id, i.indicator_id, 4 as value_id, target_2016 as data
+FROM (
+	select implementing_mechanism, target_2016, regexp_split_to_array(indicator, ':')
+	from kenprojects_raw
+) AS dt(implementing_mechanism, target_2016, indicator)
+JOIN report r ON (r.title = dt.implementing_mechanism)
+JOIN edition e ON (e.report_id = r.report_id AND e.year = 2016)
+JOIN indicator i ON (i.title = dt.indicator[2]);
+
+
+
+-- load in data for target 2017
+-- value_id = 4 for target
+-- data is target_2017
+-- edition year is 2017
+INSERT INTO data (report_id, edition_id, indicator_id, value_id, data)
+SELECT r.report_id, e.edition_id, i.indicator_id, 4 as value_id, target_2017 as data
+FROM (
+	select implementing_mechanism, target_2017, regexp_split_to_array(indicator, ':')
+	from kenprojects_raw
+) AS dt(implementing_mechanism, target_2017, indicator)
+JOIN report r ON (r.title = dt.implementing_mechanism)
+JOIN edition e ON (e.report_id = r.report_id AND e.year = 2017)
+JOIN indicator i ON (i.title = dt.indicator[2]);
+
+
+-- load in data for target 2018
+-- value_id = 4 for target
+-- data is target_2018
+-- edition year is 2018
+INSERT INTO data (report_id, edition_id, indicator_id, value_id, data)
+SELECT r.report_id, e.edition_id, i.indicator_id, 4 as value_id, target_2018 as data
+FROM (
+	select implementing_mechanism, target_2018, regexp_split_to_array(indicator, ':')
+	from kenprojects_raw
+) AS dt(implementing_mechanism, target_2018, indicator)
+JOIN report r ON (r.title = dt.implementing_mechanism)
+JOIN edition e ON (e.report_id = r.report_id AND e.year = 2018)
+JOIN indicator i ON (i.title = dt.indicator[2]);
+
+
+-- load in data for baseline
+-- value_id = 2 for baseline
+-- data is baseline_value
+INSERT INTO data (report_id, edition_id, indicator_id, value_id, data)
+SELECT r.report_id, e.edition_id, i.indicator_id, 2 as value_id, baseline_value as data
+FROM (
+	select implementing_mechanism, baseline_year, baseline_value, regexp_split_to_array(indicator, ':')
+	from kenprojects_raw
+) AS dt(implementing_mechanism, baseline_year, baseline_value, indicator)
+JOIN report r ON (r.title = dt.implementing_mechanism)
+LEFT JOIN edition e ON (e.report_id = r.report_id AND e.year = dt.baseline_year)
+JOIN indicator i ON (i.title = dt.indicator[2]);

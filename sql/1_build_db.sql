@@ -1,7 +1,7 @@
-﻿drop schema public cascade;
-create schema public;
+﻿--drop schema public cascade;
+--create schema public;
 
-CREATE EXTENSION postgis;
+--CREATE EXTENSION postgis;
 
 
 create table category(
@@ -204,46 +204,46 @@ create table data(
 
 
 
-drop table category cascade;
-
-drop table codelist cascade;
-
-drop table country cascade;
-
-drop table district cascade;
-
-drop table indicator cascade;
-
-drop table interval cascade;
-
-drop table interval_range cascade;
-
-drop table measure cascade;
-
-drop table report cascade;
-
-drop table note cascade;
-
-drop table organization cascade;
-
-drop table edition cascade;
-
-drop table report_codelist cascade;
-
-drop table report_indicator cascade;
-
-drop table report_organization cascade;
-
-drop table site cascade;
-
-drop table report_site cascade;
-
-drop table value cascade;
-
-drop table measure_value cascade;
-
-drop table report_location cascade;
-
-drop table data cascade;
-
+--drop table category cascade;
+--
+--drop table codelist cascade;
+--
+--drop table country cascade;
+--
+--drop table district cascade;
+--
+--drop table indicator cascade;
+--
+--drop table interval cascade;
+--
+--drop table interval_range cascade;
+--
+--drop table measure cascade;
+--
+--drop table report cascade;
+--
+--drop table note cascade;
+--
+--drop table organization cascade;
+--
+--drop table edition cascade;
+--
+--drop table report_codelist cascade;
+--
+--drop table report_indicator cascade;
+--
+--drop table report_organization cascade;
+--
+--drop table site cascade;
+--
+--drop table report_site cascade;
+--
+--drop table value cascade;
+--
+--drop table measure_value cascade;
+--
+--drop table report_location cascade;
+--
+--drop table data cascade;
+--
 
