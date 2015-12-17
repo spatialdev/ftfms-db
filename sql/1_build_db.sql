@@ -1,7 +1,7 @@
-﻿drop schema public cascade;
-create schema public;
+﻿-- drop schema public cascade;
+-- create schema public;
 
-CREATE EXTENSION postgis;
+-- CREATE EXTENSION postgis;
 
 
 create table category(
@@ -203,7 +203,7 @@ create table data(
 );
 
 
-
+/**
 drop table category cascade;
 
 drop table codelist cascade;
@@ -246,4 +246,4 @@ drop table report_location cascade;
 
 drop table data cascade;
 
-
+**/
