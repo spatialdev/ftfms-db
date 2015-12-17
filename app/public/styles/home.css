@@ -1,0 +1,65 @@
+.green {
+    /*background-color: rgb(255,82,82);*/
+    padding: 8px;
+    box-shadow: 0px 2px 5px 0 rgba(0,0,0,0.26);
+    opacity: 0.9;
+    color: white;
+    min-height: 100px;
+}
+
+.song-list {
+    color:#000000;
+}
+
+
+.material-icons.md-38{
+    font-size: 38px;
+    position: relative;
+    top: 10px;
+}
+
+.searchResults {
+    height: 450px;
+    overflow-y: auto;
+    margin-top: 15px;
+}
+
+.album-btn-spacing {
+    width: 100%;
+    margin: 7px 0px;
+}
+
+.song-item {
+    padding:0;
+}
+
+.max-height {
+    min-height:91vh;
+}
+
+.chart div {
+    font: 10px sans-serif;
+    background-color: rgb(63,81,181);
+    text-align: right;
+    padding: 3px;
+    margin: 1px;
+    color: white;
+}
+
+.chart rect {
+    fill:rgb(63,81,181);
+}
+
+.chart text {
+    fill: white;
+    font: 12px sans-serif;
+    text-anchor: end;
+}
+
+.chart rect:hover {
+    fill:greenyellow;
+}
+
+.chart {
+    margin: 50px;
+}

@@ -69,6 +69,9 @@ INSERT INTO site (district_id, title)
 INSERT INTO organization (title)
 	SELECT distinct(prime_partner)
 	FROM kenprojects_raw;
+	EXCEPT
+		SELECT distinct(title)
+		FROM organization
 
 
 -- populate indicator table
@@ -80,6 +83,9 @@ INSERT INTO indicator (code, title)
     ) as dt(a)
     GROUP BY 1,2
     ORDER BY 1 asc;
+	EXCEPT
+		SELECT code, title
+		FROM indicator
 
 
 -- populate interval table
@@ -105,9 +111,12 @@ INSERT INTO value (title, type) VALUES ('Actual', 'integer');
 
 -- populate edition table
 INSERT INTO edition (report_id, interval_range_id, year)
-	select report_id, 1 as interval_range_id,
-	regexp_split_to_table('2010', '2013', '2014; 2015; 2016; 2017; 2018', E'; ')::int AS year
-	from report;
+	SELECT report_id, 1 as interval_range_id,
+	regexp_split_to_table('2010; 2011; 2012; 2013; 2014; 2015; 2016; 2017; 2018', E'; ')::int AS year
+	FROM report
+	EXCEPT
+		SELECT report_id, interval_range_id, year
+		FROM edition
 
 
 -- populate report indicator table
@@ -213,7 +222,6 @@ JOIN edition e ON (e.report_id = r.report_id AND e.year = 2014)
 JOIN indicator i ON (i.title = dt.indicator[2]);
 
 
-
 -- load in data for target 2015
 -- value_id = 4 for target
 -- data is target_2015
@@ -227,7 +235,6 @@ FROM (
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2015)
 JOIN indicator i ON (i.title = dt.indicator[2]);
-
 
 
 -- load in data for actual 2015
@@ -245,7 +252,6 @@ JOIN edition e ON (e.report_id = r.report_id AND e.year = 2015)
 JOIN indicator i ON (i.title = dt.indicator[2]);
 
 
-
 -- load in data for target 2016
 -- value_id = 4 for target
 -- data is target_2016
@@ -259,7 +265,6 @@ FROM (
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2016)
 JOIN indicator i ON (i.title = dt.indicator[2]);
-
 
 
 -- load in data for target 2017

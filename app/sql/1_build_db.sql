@@ -80,7 +80,7 @@ create table interval_range(
 create table measure(
     measure_id serial primary key not null,
     indicator_id int not null references indicator(indicator_id),
-    category_id int not null references category(category_id),
+    category_id int references category(category_id),
     title character varying not null,
     code character varying
 );
@@ -185,10 +185,10 @@ create table value(
 );
 
 
-create table measure_value(
-    measure_id int primary key not null references measure(measure_id),
-    value_id int not null references value(value_id)
-);
+--create table measure_value(
+--    measure_id int primary key not null references measure(measure_id),
+--    value_id int not null references value(value_id)
+--);
 
 
 create table data(
@@ -202,6 +202,20 @@ create table data(
     exceeds_margin bit not null default cast(0 as bit(1))
 );
 
+
+-- create view with all district and country data
+CREATE VIEW country_district AS
+SELECT district.district_id, district.title as district_title, country.country_id, country.code, country.title, country.description, country.image_path
+FROM district
+JOIN country ON (district.country_id = country.country_id)
+
+
+-- create view with all site, district and country data
+CREATE VIEW country_district_site AS
+SELECT site.site_id, site.village_id, site.title as site_title, site.image_path as site_image_path, district.district_id, district.title as district_title, country.country_id, country.code, country.title, country.description, country.image_path
+FROM site
+JOIN district ON (district.district_id = site.district_id)
+JOIN country ON (district.country_id = country.country_id)
 
 
 --drop table category cascade;
