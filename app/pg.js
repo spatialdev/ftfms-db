@@ -55,7 +55,7 @@ module.exports.queryDeferred = function(sqlStr, opts){
             deferred.reject(err);
         }
 
-        pg.query(sqlStr.text, sqlStr.values, function(queryerr, result) {
+        pg.query(sqlStr.text, sqlParams, function(queryerr, result) {
 
 
             //done();
