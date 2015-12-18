@@ -231,6 +231,16 @@ GROUP BY 1,2,3,4,5,6,9
 ORDER by i.indicator_id
 
 
+-- create view organization details which includes details for organization/prime partner endpoint
+CREATE VIEW organization_details AS
+SELECT organization.organization_id, organization.title, array_agg(distinct ro.report_id) report_id, rl.country_id, array_agg( distinct rl.district_id) district_id, array_agg(distinct rl.site_id) site_id
+FROM organization
+JOIN report_organization ro ON ( ro.organization_id = organization.organization_id)
+JOIN report_location rl ON ( rl.report_id = ro.report_id)
+GROUP BY 1,2,4
+
+
+
 --drop table category cascade;
 --
 --drop table codelist cascade;

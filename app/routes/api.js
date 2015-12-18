@@ -152,9 +152,9 @@ router.get('/sites', function(req, res, next) {
 
 
 /*
- * Get list of all districts
+ * Get all data related to a report
  */
-router.get('/reports/:report_id', function(req, res, next) {
+router.get('/report_details/:report_id', function(req, res, next) {
 
 
     // Columns to be retrieved
@@ -175,7 +175,7 @@ router.get('/reports/:report_id', function(req, res, next) {
             if (results) {
                 var report = {};
                 report.report_id = results[0].properties.report_id;
-                report.report_title = results[0].properties.report_title;
+                report.title = results[0].properties.report_title;
                 report.country_id = results[0].properties.country_id;
                 report.district_id = results[0].properties.district_id;
                 report.site_id = results[0].properties.site_id;
@@ -197,8 +197,52 @@ router.get('/reports/:report_id', function(req, res, next) {
                 res.send(JSON.stringify(report));
             }
             else {
-                //todo is this the right way to handle this?
-                res.send(JSON.stringify("Report does not exist"));
+                res.send(JSON.stringify({status:"error", msg:"Report does not exist"}));
+            }
+
+        })
+        .catch(function(err){
+            res.send(JSON.stringify({status:"error", msg:err.message}));
+            next(err);
+        });
+});
+
+
+
+/*
+ * Get all data related to a organization/prime partner
+ */
+router.get('/organization_details/:organization_id', function(req, res, next) {
+
+
+    // Columns to be retrieved
+    var columnsToGet = "organization_id, title, report_id, country_id, district_id, site_id, organization_id";
+
+    var wc = {whereClause :"WHERE organization_id = $1" };
+
+    var sql = pg.featureCollectionSQL("organization_details", columnsToGet, wc);
+    var preparedStatement = {
+        name: "get_one_organization_details",
+        text: sql,
+        values:[]};
+
+    pg.queryDeferred(preparedStatement, {sqlParams: [req.params.organization_id]})
+        .then(function(result){
+            var results = result[0].response.features;
+
+            if (results) {
+                var organization = {};
+                organization.organization_id = results[0].properties.organization_id;
+                organization.title = results[0].properties.title;
+                organization.report_id = results[0].properties.report_id;
+                organization.country_id = results[0].properties.country_id;
+                organization.district_id = results[0].properties.district_id;
+                organization.site_id = results[0].properties.site_id;
+
+                res.send(JSON.stringify(organization));
+            }
+            else {
+                res.send(JSON.stringify({status:"error", msg:"Organization does not exist"}));
             }
 
         })
@@ -206,6 +250,8 @@ router.get('/reports/:report_id', function(req, res, next) {
             next(err);
         });
 });
+
+
 
 
 module.exports = router;
