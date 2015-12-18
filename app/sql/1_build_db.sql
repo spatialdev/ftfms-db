@@ -207,7 +207,7 @@ create table data(
 CREATE VIEW country_district AS
 SELECT district.district_id, district.title as district_title, country.country_id, country.code, country.title, country.description, country.image_path
 FROM district
-JOIN country ON (district.country_id = country.country_id)
+JOIN country ON (district.country_id = country.country_id);
 
 
 -- create view with all site, district and country data
@@ -215,7 +215,20 @@ CREATE VIEW country_district_site AS
 SELECT site.site_id, site.village_id, site.title as site_title, site.image_path as site_image_path, district.district_id, district.title as district_title, country.country_id, country.code, country.title, country.description, country.image_path
 FROM site
 JOIN district ON (district.district_id = site.district_id)
-JOIN country ON (district.country_id = country.country_id)
+JOIN country ON (district.country_id = country.country_id);
+
+
+-- create view report details which includes details for report endpoint
+CREATE VIEW report_details AS
+SELECT report.report_id, report.title report_title, i.indicator_id, i.title indicator_title, i.code, rl.country_id, array_agg( distinct rl.district_id) district_id, array_agg(distinct rl.site_id) site_id, o.organization_id
+FROM report
+JOIN report_indicator ri ON (report.report_id = ri.report_id)
+JOIN indicator i ON (ri.indicator_id = i.indicator_id)
+JOIN report_location rl ON ( rl.report_id = report.report_id)
+JOIN report_organization ro ON ( ro.report_id = report.report_id)
+JOIN organization o ON (o.organization_id = ro.organization_id)
+GROUP BY 1,2,3,4,5,6,9
+ORDER by i.indicator_id
 
 
 --drop table category cascade;

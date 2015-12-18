@@ -151,60 +151,61 @@ router.get('/sites', function(req, res, next) {
 
 
 
-
 /*
- * Get list of all states
+ * Get list of all districts
  */
-router.get('/states', function(req, res, next) {
-    console.log('get all states');
+router.get('/reports/:report_id', function(req, res, next) {
 
 
-    // All columns in table with the exception of the geometry column
-    var nonGeomColumns = "id,name";
+    // Columns to be retrieved
+    var columnsToGet = "report_id, report_title, indicator_id, indicator_title, code, country_id, district_id, site_id, organization_id";
 
-    var sql = pg.featureCollectionSQL("state", nonGeomColumns);
+    var wc = {whereClause :"WHERE report_id = $1" };
+
+    var sql = pg.featureCollectionSQL("report_details", columnsToGet, wc);
     var preparedStatement = {
-        name: "get_all_states",
+        name: "get_one_report",
         text: sql,
         values:[]};
 
-    pg.queryDeferred(preparedStatement)
+    pg.queryDeferred(preparedStatement, {sqlParams: [req.params.report_id]})
         .then(function(result){
-            res.send(JSON.stringify(result[0]));
+            var results = result[0].response.features;
+
+            if (results) {
+                var report = {};
+                report.report_id = results[0].properties.report_id;
+                report.report_title = results[0].properties.report_title;
+                report.country_id = results[0].properties.country_id;
+                report.district_id = results[0].properties.district_id;
+                report.site_id = results[0].properties.site_id;
+
+                report.indicators = [];
+
+                results.forEach(function(indicator) {
+
+                    var indicator_data = {};
+
+                    indicator_data.indicator_id = indicator.properties.indicator_id;
+                    indicator_data.title = indicator.properties.indicator_title;
+                    indicator_data.code = indicator.properties.code;
+                    indicator_data.indicator_id = indicator.properties.indicator_id;
+
+                    report.indicators.push(indicator_data);
+                });
+
+                res.send(JSON.stringify(report));
+            }
+            else {
+                //todo is this the right way to handle this?
+                res.send(JSON.stringify("Report does not exist"));
+            }
+
         })
         .catch(function(err){
             next(err);
         });
-
-
 });
-
-/*
- * Get all state data
- */
-router.get('/all-state-data', function(req, res, next) {
-    console.log('get album votes');
-
-
-    // All columns in table with the exception of the geometry column
-    var nonGeomColumns = "state_id, indicator_id, indicator_value, indicator_title, name";
-
-    var sql = pg.featureCollectionSQL("full_state_data_info", nonGeomColumns);
-    var preparedStatement = {
-        name: "get_full_state_data_info",
-        text: sql,
-        values:[]};
-
-    pg.queryDeferred(preparedStatement)
-        .then(function(result){
-            res.send(JSON.stringify(result[0]));
-        })
-        .catch(function(err){
-            next(err);
-        });
-
-});
-
 
 
 module.exports = router;
