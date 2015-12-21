@@ -1,0 +1,47 @@
+.stories-container {
+    width: 700px;
+}
+
+.stories-container .title{
+    padding-left: 16px;
+}
+
+.side-view .description {
+    float: left;
+    padding-left: 20px;
+    line-height: 31px;
+}
+
+.thumbnail-container{
+    width: auto;
+}
+
+.stories-container .thumbnail .image{
+    padding: 8px;
+    background-color: #fff;
+    -moz-box-shadow:    0px 0px 6px 1px #ccc;
+    -webkit-box-shadow: 0px 0px 6px 1px #ccc;
+    box-shadow: 0px 0px 6px 1px #ccc;
+}
+
+.stories-container .thumbnail .image img{
+    width: 100%;
+}
+
+.stories-container .thumbnail .caption{
+    padding: 0px;
+    padding-top: 10px;
+}
+
+.nopaddingnomargin {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.nopadding{
+    padding: 0 !important;
+}
+
+.thumbnail .item-arrow{
+    line-height: 27px;
+}

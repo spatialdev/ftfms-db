@@ -1,0 +1,32 @@
+.layers-container {
+    width: 400px;
+}
+
+.layers-container div.layerGroupButtonWrapper {
+    background-color: #dddddd;
+}
+
+.layers-container div.layerGroupButton {
+    padding: 40px 10px;
+    border-bottom: 1px solid #b1b2b2;
+    font-family: oswaldregular;
+    text-transform: uppercase;
+    font-size: 17px;
+    text-align: center;
+    color: #b1b2b2;
+    cursor:pointer;
+    border-left: 4px solid transparent;
+}
+
+.layers-container div.layerGroupButton.active, .layers-container div.layerGroupButton:hover {
+    border-left: 4px solid #23789B;
+    color: #333;
+}
+
+.layers-container .leftButtonColumn, .layerGroupButtonWrapper{
+    height: 100%;
+}
+
+.layers-container div.icon{
+    font-size: 45px;
+}
