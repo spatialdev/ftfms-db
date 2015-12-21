@@ -7,7 +7,7 @@ angular.module('myApp', [
     config(['$routeProvider', function($routeProvider) {
         $routeProvider
             .when('/', {
-                templateUrl: 'public/templates/home.html',
+                templateUrl: 'templates/home.html',
                 controller: 'HomeCtrl'
             })
 
