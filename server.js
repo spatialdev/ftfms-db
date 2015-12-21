@@ -10,7 +10,7 @@ var morgan = require('morgan');             // log requests to the console (expr
 var bodyParser = require('body-parser');    // pull information from HTML POST (express4)
 var methodOverride = require('method-override'); // simulate DELETE and PUT (express4)
 
-var api = require('./app/routes/api');
+var api = require('./app/api/routes/api');
 
 
 // configuration =================
