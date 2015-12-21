@@ -1,0 +1,100 @@
+.side-view .navpanel {
+    left: -700px;
+    position: absolute;
+    background-color: #F2F2F2;
+    -webkit-transition: all .5s ease;
+    -moz-transition: all .5s ease;
+    -ms-transition: all .5s ease;
+    transition: all .5s ease;
+    height: 100%;
+    max-width: 700px;
+}
+
+.side-view .navpanel.on {
+    left: 0px;
+    -webkit-transition: all .5s ease;
+    -moz-transition: all .5s ease;
+    -ms-transition: all .5s ease;
+    transition: all .5s ease;
+}
+
+.side-view {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    background-color: #F2F2F2;
+    z-index: 2003;
+}
+.side-view.on {
+    left: 0px;
+    -webkit-transition: all .5s ease;
+    -moz-transition: all .5s ease;
+    -ms-transition: all .5s ease;
+    transition: all .5s ease;
+}
+
+.side-view-close {
+    background-color: #23789B;
+    border-radius: 0;
+    float: right;
+    padding: 17px 19px;
+    font-size: 20px;
+    line-height: 1;
+}
+
+.side-view .title{
+    font-size: 20px;
+    font-family: oswaldregular;
+    float: left;
+    text-transform: uppercase;
+}
+
+.side-view-title-wrapper {
+	margin-top: 20px;
+}
+
+.side-view .thumbnail {
+    background-color: transparent;
+    padding: 0;
+    border-radius: 0;
+    border-color: #F2F2F2;
+    border: none;
+}
+
+.side-view .tab-content {
+    padding: 10px 26px;
+    background-color: white;
+}
+
+.side-view .disabled-radio-label {
+    color: #A0A0A0;
+}
+
+.side-view .nav-tabs a {
+    cursor: pointer;
+    font-size: 12px;
+    font-family: oswaldregular;
+    text-transform: uppercase;
+    color: #9E9E9E;
+}
+
+.side-view .nav-tabs a:hover {
+    color: #2D91CD;
+}
+
+.side-view li.active > a {
+    color: #2D91CD;
+}
+
+.side-view li.active > a:hover {
+    color: #2D91CD;
+}
+
+.side-view .btn:focus{
+    outline: 5px auto #2D91CD;
+}
+
+.side-view label {
+    font-weight: normal;
+}

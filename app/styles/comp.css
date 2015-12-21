@@ -1,0 +1,96 @@
+/* use this panel when developing to preview css changes using live edit in webstorm */
+html, body {
+    height: 100%;
+    width: 100%;
+    min-width:960px;
+}
+
+a {
+    cursor: pointer;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}
+
+#AppContainer {
+    height: 100%;
+    width: 100%;
+}
+
+.leaflet-control-attribution {
+    display: none;
+}
+
+/* Map Top Right Toolbar */
+
+#MapUpperRightToolbarWrapper {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2002;
+}
+
+#MapUpperRightToolbarWrapper > div {
+    float: left;
+    background-color: #43484a;
+    color: #fff;
+    text-transform: uppercase;
+    padding: 7px 25px;
+    font-size: 14px;
+    font-family: oswaldregular;
+    cursor: pointer;
+
+}
+
+#MapUpperRightToolbarWrapper .btn{
+    border-radius: 0px;
+    border: 0px;
+    background-color: #23789B;
+    padding: 11px;
+    font-size: 11px;
+}
+
+#MapUpperRightToolbarWrapper .btn:hover{
+    background-color: #2D91CD;
+}
+
+#MapUpperRightToolbarWrapper .btn:active{
+    background-color: #2D91CD;
+}
+
+#MapUpperRightToolbarWrapper div.light {
+    background-color: #666666;
+}
+
+#MapUpperRightToolbarWrapper div.light.export {
+    padding-left: 10px;
+}
+
+#MapUpperRightToolbarWrapper .search {
+    font-size: 20px;
+    padding: 2px 17px;
+    border-left: 1px solid #fff;
+    height: 34px;
+    min-width: 55px;
+}
+
+/* End Map Top Right Toolbar */
+
+
+
+.stories-container a.thumbnail:hover, .stories-container a.thumbnail:focus, .stories-container a.thumbnail.active {
+    border: none;
+}
+
+/* End override the Bootstrap Inner-Shadow */
+
+.scrollable {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.center {
+    text-align: center;
+}

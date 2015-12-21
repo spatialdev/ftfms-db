@@ -1,0 +1,24 @@
+<nav ng-controller="ThemeCtrl" id="ThemeSelectorMenu" class="navbar navbar-default navbar-fixed-bottom" role="navigation">
+    <div class="navbar-header">
+        <span class="navbar-brand">View by:</span>
+    </div>
+    <div class="menu-selection">
+        <ul class="nav navbar-nav">
+            <li class="dropdown">
+                <span class="dropdown-toggle" data-toggle="dropdown" ng-click="toggleThemeMenu()">
+                    {{themeName}}
+                </span>
+                <ul id="ThemeMenu" class="dropdown-menu">
+                    <li ng-click="setTheme('all')">All Countries</li>
+                    <li ng-click="setTheme('bangladesh')">Bangladesh</li>
+                    <li ng-click="setTheme('india')">India</li>
+                    <li ng-click="setTheme('indonesia')">Indonesia</li>
+                    <li ng-click="setTheme('kenya')">Kenya</li>
+                    <li ng-click="setTheme('nigeria')">Nigeria</li>
+                    <li ng-click="setTheme('tanzania')">Tanzania</li>
+                    <li ng-click="setTheme('uganda')">Uganda</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</nav>
