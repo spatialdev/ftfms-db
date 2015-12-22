@@ -243,21 +243,24 @@ SELECT  distinct(report_id), country.country_id, district.district_id, site_id
 
 
 -- populate measure table
--- todo do we want to use this?
---INSERT INTO measure (title, indicator_id)
---    SELECT distinct(measure), indicator.indicator_id
---    FROM (
---        select regexp_split_to_array(indicator, ':'), -- split into multiple columns
---     measure
---        from ethiopia_raw
---        where measure is not null
---    ) as dt(a)
---    JOIN indicator ON (indicator.title = a[2])
---    GROUP BY 1,2
---    EXCEPT
---        SELECT title, indicator_id
---        FROM measure;
+INSERT INTO measure (title, indicator_id)
+    SELECT distinct(measure), indicator.indicator_id
+    FROM (
+        select regexp_split_to_array(indicator, ':'), -- split into multiple columns
+     measure
+        from ethiopia_raw
+        where measure is not null
+    ) as dt(a)
+    JOIN indicator ON (indicator.title = a[2])
+    GROUP BY 1,2
+    EXCEPT
+        SELECT title, indicator_id
+        FROM measure;
 
+-- populate measure_value table
+INSERT INTO measure_value (measure_id, value_id)
+	SELECT measure_id, value_id
+	FROM measure, value
 
 
 -- load data into data table
@@ -265,30 +268,33 @@ select * from value;
 -- load in data for target 2010
 -- data is target_2010
 -- edition year is 2010
-INSERT INTO data (report_id, edition_id, indicator_id, value_id, data)
-SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, target_2010 as data
+INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_id)
+SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, target_2010 as data, m.measure_id
 FROM value v, (
-	select implementing_mechanism, target_2010, regexp_split_to_array(indicator, ':')
+	select measure,implementing_mechanism, target_2010, regexp_split_to_array(indicator, ':')
 	from ethiopia_raw
-) AS dt(implementing_mechanism, target_2010, indicator)
+) AS dt(measure,implementing_mechanism, target_2010, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2010)
 JOIN indicator i ON (i.title = dt.indicator[2])
+LEFT JOIN measure m ON (m.title = dt.measure)
 WHERE v.title = 'Target';
+
 
 -- load in data for actual 2010
 -- value_id = 3 for actual
 -- data is actual_2010
 -- edition year is 2010
-INSERT INTO data (report_id, edition_id, indicator_id, value_id, data)
-SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, actual_2010 as data
+INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_id)
+SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, actual_2010 as data, m.measure_id
 FROM value v, (
-	select implementing_mechanism, actual_2010, regexp_split_to_array(indicator, ':')
+	select measure, implementing_mechanism, actual_2010, regexp_split_to_array(indicator, ':')
 	from ethiopia_raw
-) AS dt(implementing_mechanism, actual_2010, indicator)
+) AS dt(measure, implementing_mechanism, actual_2010, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2010)
 JOIN indicator i ON (i.title = dt.indicator[2])
+LEFT JOIN measure m ON (m.title = dt.measure)
 WHERE v.title = 'Actual';
 
 
@@ -296,15 +302,16 @@ WHERE v.title = 'Actual';
 -- value_id = 4 for target
 -- data is target_2011
 -- edition year is 2011
-INSERT INTO data (report_id, edition_id, indicator_id, value_id, data)
-SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, target_2011 as data
+INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_id)
+SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, target_2011 as data, m.measure_id
 FROM value v, (
-	select implementing_mechanism, target_2011, regexp_split_to_array(indicator, ':')
+	select measure, implementing_mechanism, target_2011, regexp_split_to_array(indicator, ':')
 	from ethiopia_raw
-) AS dt(implementing_mechanism, target_2011, indicator)
+) AS dt(measure, implementing_mechanism, target_2011, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2011)
 JOIN indicator i ON (i.title = dt.indicator[2])
+LEFT JOIN measure m ON (m.title = dt.measure)
 WHERE v.title = 'Target';
 
 
@@ -313,15 +320,16 @@ WHERE v.title = 'Target';
 -- value_id = 3 for actual
 -- data is actual_2011
 -- edition year is 2011
-INSERT INTO data (report_id, edition_id, indicator_id, value_id, data)
-SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, actual_2011 as data
+INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_id)
+SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, actual_2011 as data, m.measure_id
 FROM value v, (
-	select implementing_mechanism, actual_2011, regexp_split_to_array(indicator, ':')
+	select measure, implementing_mechanism, actual_2011, regexp_split_to_array(indicator, ':')
 	from ethiopia_raw
-) AS dt(implementing_mechanism, actual_2011, indicator)
+) AS dt(measure, implementing_mechanism, actual_2011, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2011)
 JOIN indicator i ON (i.title = dt.indicator[2])
+LEFT JOIN measure m ON (m.title = dt.measure)
 WHERE v.title = 'Actual';
 
 
@@ -330,15 +338,16 @@ WHERE v.title = 'Actual';
 -- value_id = 4 for target
 -- data is target_2012
 -- edition year is 2012
-INSERT INTO data (report_id, edition_id, indicator_id, value_id, data)
-SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, target_2012 as data
+INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_id)
+SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, target_2012 as data, m.measure_id
 FROM value v, (
-	select implementing_mechanism, target_2012, regexp_split_to_array(indicator, ':')
+	select measure, implementing_mechanism, target_2012, regexp_split_to_array(indicator, ':')
 	from ethiopia_raw
-) AS dt(implementing_mechanism, target_2012, indicator)
+) AS dt(measure, implementing_mechanism, target_2012, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2012)
 JOIN indicator i ON (i.title = dt.indicator[2])
+LEFT JOIN measure m ON (m.title = dt.measure)
 WHERE v.title = 'Target';
 
 
@@ -347,15 +356,16 @@ WHERE v.title = 'Target';
 -- value_id = 3 for actual
 -- data is actual_2012
 -- edition year is 2012
-INSERT INTO data (report_id, edition_id, indicator_id, value_id, data)
-SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, actual_2012 as data
+INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_id)
+SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, actual_2012 as data, m.measure_id
 FROM value v, (
-	select implementing_mechanism, actual_2012, regexp_split_to_array(indicator, ':')
+	select measure, implementing_mechanism, actual_2012, regexp_split_to_array(indicator, ':')
 	from ethiopia_raw
-) AS dt(implementing_mechanism, actual_2012, indicator)
+) AS dt(measure, implementing_mechanism, actual_2012, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2012)
 JOIN indicator i ON (i.title = dt.indicator[2])
+LEFT JOIN measure m ON (m.title = dt.measure)
 WHERE v.title = 'Actual';
 
 
@@ -364,15 +374,16 @@ WHERE v.title = 'Actual';
 -- value_id = 4 for target
 -- data is target_2013
 -- edition year is 2013
-INSERT INTO data (report_id, edition_id, indicator_id, value_id, data)
-SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, target_2013 as data
+INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_id)
+SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, target_2013 as data, m.measure_id
 FROM value v, (
-	select implementing_mechanism, target_2013, regexp_split_to_array(indicator, ':')
+	select measure, implementing_mechanism, target_2013, regexp_split_to_array(indicator, ':')
 	from ethiopia_raw
-) AS dt(implementing_mechanism, target_2013, indicator)
+) AS dt(measure, implementing_mechanism, target_2013, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2013)
 JOIN indicator i ON (i.title = dt.indicator[2])
+LEFT JOIN measure m ON (m.title = dt.measure)
 WHERE v.title = 'Target';
 
 
@@ -381,15 +392,16 @@ WHERE v.title = 'Target';
 -- value_id = 3 for actual
 -- data is actual_2013
 -- edition year is 2013
-INSERT INTO data (report_id, edition_id, indicator_id, value_id, data)
-SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, actual_2013 as data
+INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_id)
+SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, actual_2013 as data, m.measure_id
 FROM value v, (
-	select implementing_mechanism, actual_2013, regexp_split_to_array(indicator, ':')
+	select measure, implementing_mechanism, actual_2013, regexp_split_to_array(indicator, ':')
 	from ethiopia_raw
-) AS dt(implementing_mechanism, actual_2013, indicator)
+) AS dt(measure, implementing_mechanism, actual_2013, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2013)
 JOIN indicator i ON (i.title = dt.indicator[2])
+LEFT JOIN measure m ON (m.title = dt.measure)
 WHERE v.title = 'Actual';
 
 
@@ -397,15 +409,16 @@ WHERE v.title = 'Actual';
 -- value_id = 4 for target
 -- data is target_2014
 -- edition year is 2014
-INSERT INTO data (report_id, edition_id, indicator_id, value_id, data)
-SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, target_2014 as data
+INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_id)
+SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, target_2014 as data, m.measure_id
 FROM value v, (
-	select implementing_mechanism, target_2014, regexp_split_to_array(indicator, ':')
+	select measure, implementing_mechanism, target_2014, regexp_split_to_array(indicator, ':')
 	from ethiopia_raw
-) AS dt(implementing_mechanism, target_2014, indicator)
+) AS dt(measure, implementing_mechanism, target_2014, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2014)
 JOIN indicator i ON (i.title = dt.indicator[2])
+LEFT JOIN measure m ON (m.title = dt.measure)
 WHERE v.title = 'Target';
 
 
@@ -413,15 +426,16 @@ WHERE v.title = 'Target';
 -- value_id = 3 for actual
 -- data is actual_2014
 -- edition year is 2014
-INSERT INTO data (report_id, edition_id, indicator_id, value_id, data)
-SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, actual_2014 as data
+INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_id)
+SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, actual_2014 as data, m.measure_id
 FROM value v, (
-	select implementing_mechanism, actual_2014, regexp_split_to_array(indicator, ':')
+	select measure, implementing_mechanism, actual_2014, regexp_split_to_array(indicator, ':')
 	from ethiopia_raw
-) AS dt(implementing_mechanism, actual_2014, indicator)
+) AS dt(measure, implementing_mechanism, actual_2014, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2014)
 JOIN indicator i ON (i.title = dt.indicator[2])
+LEFT JOIN measure m ON (m.title = dt.measure)
 WHERE v.title = 'Actual';
 
 
@@ -429,15 +443,16 @@ WHERE v.title = 'Actual';
 -- value_id = 4 for target
 -- data is target_2015
 -- edition year is 2015
-INSERT INTO data (report_id, edition_id, indicator_id, value_id, data)
-SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, target_2015 as data
+INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_id)
+SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, target_2015 as data, m.measure_id
 FROM value v, (
-	select implementing_mechanism, target_2015, regexp_split_to_array(indicator, ':')
+	select measure, implementing_mechanism, target_2015, regexp_split_to_array(indicator, ':')
 	from ethiopia_raw
-) AS dt(implementing_mechanism, target_2015, indicator)
+) AS dt(measure, implementing_mechanism, target_2015, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2015)
 JOIN indicator i ON (i.title = dt.indicator[2])
+LEFT JOIN measure m ON (m.title = dt.measure)
 WHERE v.title = 'Target';
 
 
@@ -446,15 +461,16 @@ WHERE v.title = 'Target';
 -- value_id = 3 for actual
 -- data is actual_2015
 -- edition year is 2015
-INSERT INTO data (report_id, edition_id, indicator_id, value_id, data)
-SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, actual_2015 as data
+INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_id)
+SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, actual_2015 as data, m.measure_id
 FROM value v, (
-	select implementing_mechanism, actual_2015, regexp_split_to_array(indicator, ':')
+	select measure, implementing_mechanism, actual_2015, regexp_split_to_array(indicator, ':')
 	from ethiopia_raw
-) AS dt(implementing_mechanism, actual_2015, indicator)
+) AS dt(measure, implementing_mechanism, actual_2015, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2015)
 JOIN indicator i ON (i.title = dt.indicator[2])
+LEFT JOIN measure m ON (m.title = dt.measure)
 WHERE v.title = 'Actual';
 
 
@@ -463,15 +479,16 @@ WHERE v.title = 'Actual';
 -- value_id = 4 for target
 -- data is target_2016
 -- edition year is 2016
-INSERT INTO data (report_id, edition_id, indicator_id, value_id, data)
-SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, target_2016 as data
+INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_id)
+SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, target_2016 as data, m.measure_id
 FROM value v, (
-	select implementing_mechanism, target_2016, regexp_split_to_array(indicator, ':')
+	select measure, implementing_mechanism, target_2016, regexp_split_to_array(indicator, ':')
 	from ethiopia_raw
-) AS dt(implementing_mechanism, target_2016, indicator)
+) AS dt(measure, implementing_mechanism, target_2016, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2016)
 JOIN indicator i ON (i.title = dt.indicator[2])
+LEFT JOIN measure m ON (m.title = dt.measure)
 WHERE v.title = 'Target';
 
 
@@ -480,28 +497,30 @@ WHERE v.title = 'Target';
 -- value_id = 4 for target
 -- data is target_2017
 -- edition year is 2017
-INSERT INTO data (report_id, edition_id, indicator_id, value_id, data)
-SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, target_2017 as data
+INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_id)
+SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, target_2017 as data, m.measure_id
 FROM value v, (
-	select implementing_mechanism, target_2017, regexp_split_to_array(indicator, ':')
+	select measure, implementing_mechanism, target_2017, regexp_split_to_array(indicator, ':')
 	from ethiopia_raw
-) AS dt(implementing_mechanism, target_2017, indicator)
+) AS dt(measure, implementing_mechanism, target_2017, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2017)
 JOIN indicator i ON (i.title = dt.indicator[2])
+LEFT JOIN measure m ON (m.title = dt.measure)
 WHERE v.title = 'Target';
 
 
 -- load in data for baseline
 -- value_id = 2 for baseline
 -- data is baseline_value
-INSERT INTO data (report_id, edition_id, indicator_id, value_id, data)
-SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, baseline_value as data
+INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_id)
+SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, baseline_year as data, m.measure_id
 FROM value v, (
-	select implementing_mechanism, baseline_year, baseline_value, regexp_split_to_array(indicator, ':')
+	select measure, implementing_mechanism, baseline_year, baseline_value, regexp_split_to_array(indicator, ':')
 	from ethiopia_raw
-) AS dt(implementing_mechanism, baseline_year, baseline_value, indicator)
+) AS dt(measure, implementing_mechanism, baseline_year, baseline_value, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 LEFT JOIN edition e ON (e.report_id = r.report_id AND e.year = dt.baseline_year)
 JOIN indicator i ON (i.title = dt.indicator[2])
+LEFT JOIN measure m ON (m.title = dt.measure)
 WHERE v.title = 'Baseline';

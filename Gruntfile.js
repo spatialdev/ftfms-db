@@ -12,8 +12,8 @@ module.exports = function(grunt) {
          */
         static_api_docs: {
             api_docs: {
-                src: "app/api/documentation.json",
-                dest: "app/api"
+                src: "api/documentation.json",
+                dest: "api"
             }
         }
 
