@@ -1,0 +1,216 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "FTFMS API",
+    "description": "API to access FTFMS data",
+    "version": "1.0.0"
+  },
+  "schemes": [
+    "https"
+  ],
+  "basePath": "/v1",
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/organizations": {
+      "get": {
+        "summary": "Organizations - Get all",
+        "parameters": [],
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "A FeatureCollection of organizations",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "features": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "organizaton_id": {
+                        "type": "integer",
+                        "description": "organization id"
+                      },
+                      "title": {
+                        "type": "string",
+                        "description": "organization title"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/countries": {
+      "get": {
+        "summary": "Countries - Get all",
+        "parameters": [],
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "A FeatureCollection of all Countries",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "features": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "description": "countries",
+                    "properties": {
+                      "country_id": {
+                        "type": "integer",
+                        "description": "country id"
+                      },
+                      "code": {
+                        "type": "string",
+                        "description": "country code"
+                      },
+                      "title": {
+                        "type": "string",
+                        "description": "country title"
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "country description"
+                      },
+                      "image_path": {
+                        "type": "string",
+                        "description": "path to country image"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/districts": {
+      "get": {
+        "summary": "Districts - Get all",
+        "parameters": [],
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "An array of district objects",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "district_id": {
+                    "type": "integer",
+                    "description": "district id"
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "district title"
+                  },
+                  "country": {
+                    "type": "object",
+                    "description": "district country",
+                    "properties": {
+                      "country_id": {
+                        "type": "integer",
+                        "description": "country id"
+                      },
+                      "code": {
+                        "type": "string",
+                        "description": "country code"
+                      },
+                      "title": {
+                        "type": "string",
+                        "description": "country title"
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "country description"
+                      },
+                      "image_path": {
+                        "type": "string",
+                        "description": "path to country image"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/report_details/:report_id": {
+      "get": {
+        "summary": "Get one report details",
+        "description": "",
+        "parameters": [
+          {
+            "name": "report_id",
+            "in": "URL",
+            "required": true,
+            "type": "integer",
+            "description": "Report ID."
+          }
+        ],
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "A report object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "report_id": {
+                  "type": "integer",
+                  "description": "Report id"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Report title"
+                },
+                "country_id": {
+                  "type": "integer",
+                  "description": "Country associated with report"
+                },
+                "district_id": {
+                  "type": "array",
+                  "description": "Array of district ids associated with report"
+                },
+                "site_id": {
+                  "type": "array",
+                  "description": "Array of site ids associated with report"
+                },
+                "indicators": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "indicator_id": {
+                        "type": "integer",
+                        "description": "Indicator ID"
+                      },
+                      "title": {
+                        "type": "string",
+                        "description": "Indicator title"
+                      },
+                      "code": {
+                        "type": "string",
+                        "description": "Indicator Code"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

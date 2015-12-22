@@ -185,10 +185,12 @@ create table value(
 );
 
 
---create table measure_value(
---    measure_id int primary key not null references measure(measure_id),
---    value_id int not null references value(value_id)
---);
+create table measure_value(
+    measure_id int not null references measure(measure_id),
+    value_id int not null references value(value_id),
+
+    PRIMARY KEY(measure_id, value_id)
+);
 
 
 create table data(
