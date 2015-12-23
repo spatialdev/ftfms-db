@@ -112,6 +112,10 @@ INSERT INTO site (district_id, title)
 	GROUP BY district_id, admin2;
 
 
+-- geography table is no longer needed
+DROP TABLE bangladesh_geography;
+
+
 -- populate organization table
 INSERT INTO organization (title)
 	SELECT distinct(prime_partner)
