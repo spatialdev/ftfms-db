@@ -96,50 +96,50 @@ SpatialViewer.run(function ($rootScope, $state, $stateParams) {
 
 SpatialViewer.config(function ($stateProvider, $urlRouterProvider) {
   $urlRouterProvider
-    .when('/default', '/map@0,0,2(satellite,wa)')
-    .when('/phl', '/map@11.759815,121.893311,6(satellite,phl)')
-    .otherwise(localStorage.getItem('defaultRoute') || '/map@0,0,2(satellite)');
+      .when('/default', '/map@0,0,2(satellite,wa)')
+      .when('/phl', '/map@11.759815,121.893311,6(satellite,phl)')
+      .otherwise(localStorage.getItem('defaultRoute') || '/map@0,0,2(satellite)');
 
   $stateProvider
-    .state('main', {
-      url: '/map@:lat,:lng,:zoom(*layers)?title&zoom-extent&stories&layers-panel&filters-panel&filters&legend&basemaps&info&theme&details-panel&search-panel&sf_id&level',
-      views: {
-        'details': {
-          template: ' ',
-          controller: 'MainCtrl'
-        },
-        'theme': {
-          templateUrl: 'views/theme.html',
-          controller: 'ThemeCtrl'
-        }
-      }
-    })
-    .state('upload', {
-      url: '/map@:lat,:lng,:zoom(*layers)/upload?title&zoom-extent&stories&layers-panel&filters-panel&filters&legend&basemaps&info&theme&details-panel&search-panel&sf_id&level',
-      views: {
-        'details': {
-          template: ' ',
-          controller: 'MainCtrl'
-        },
-        'upload': {
-          templateUrl: 'views/upload.html',
-          controller: 'UploadCtrl'
-        }
-      }
-    })
-    .state('export', {
-          url: '/map@:lat,:lng,:zoom(*layers)/export?title&zoom-extent&stories&layers-panel&filters-panel&filters&legend&basemaps&info&theme&details-panel&search-panel&sf_id&level',
-          views: {
-              'details': {
-                  template: ' ',
-                  controller: 'MainCtrl'
-              },
-              'export': {
-                  templateUrl: 'views/export.html',
-                  controller: 'ExportCtrl'
-              }
+      .state('main', {
+        url: '/map@:lat,:lng,:zoom(*layers)?title&zoom-extent&stories&layers-panel&filters-panel&filters&legend&basemaps&info&theme&details-panel&search-panel&sf_id&level',
+        views: {
+          'details': {
+            template: ' ',
+            controller: 'MainCtrl'
+          },
+          'theme': {
+            templateUrl: 'views/theme.html',
+            controller: 'ThemeCtrl'
           }
-     });
+        }
+      })
+      .state('upload', {
+        url: '/map@:lat,:lng,:zoom(*layers)/upload?title&zoom-extent&stories&layers-panel&filters-panel&filters&legend&basemaps&info&theme&details-panel&search-panel&sf_id&level',
+        views: {
+          'details': {
+            template: ' ',
+            controller: 'MainCtrl'
+          },
+          'upload': {
+            templateUrl: 'views/upload.html',
+            controller: 'UploadCtrl'
+          }
+        }
+      })
+      .state('export', {
+        url: '/map@:lat,:lng,:zoom(*layers)/export?title&zoom-extent&stories&layers-panel&filters-panel&filters&legend&basemaps&info&theme&details-panel&search-panel&sf_id&level',
+        views: {
+          'details': {
+            template: ' ',
+            controller: 'MainCtrl'
+          },
+          'export': {
+            templateUrl: 'views/export.html',
+            controller: 'ExportCtrl'
+          }
+        }
+      });
 
 });
 
@@ -181,6 +181,7 @@ require('./services/LayerConfig');
 require('./services/StoriesConfig');
 require('./services/Vector/VectorProvider');
 require('./services/Donuts');
+require('./services/MapDataService')
 require('./controllers/main');
 require('./controllers/map');
 require('./controllers/details');
