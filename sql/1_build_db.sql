@@ -205,6 +205,22 @@ create table data(
 );
 
 
+-- populate interval table
+-- interval at which data is reported
+INSERT INTO interval (title) VALUES ('annually');
+
+
+INSERT INTO value (title, type) VALUES ('Baseline', 'integer');
+INSERT INTO value (title, type) VALUES ('Target', 'integer');
+INSERT INTO value (title, type) VALUES ('Actual', 'integer');
+
+
+-- populate interval_range table
+INSERT INTO interval_range (interval_id, title,from_month, from_day, to_month, to_day)
+VALUES (1, 'Full Year', 1, 1, 12, 31);
+
+
+
 -- create view with all district and country data
 CREATE VIEW country_district AS
 SELECT district.district_id, district.title as district_title, country.country_id, country.code, country.title, country.description, country.image_path
@@ -230,7 +246,7 @@ JOIN report_location rl ON ( rl.report_id = report.report_id)
 JOIN report_organization ro ON ( ro.report_id = report.report_id)
 JOIN organization o ON (o.organization_id = ro.organization_id)
 GROUP BY 1,2,3,4,5,6,9
-ORDER by i.indicator_id
+ORDER by i.indicator_id;
 
 
 -- create view organization details which includes details for organization/prime partner endpoint
@@ -239,8 +255,57 @@ SELECT organization.organization_id, organization.title, array_agg(distinct ro.r
 FROM organization
 JOIN report_organization ro ON ( ro.organization_id = organization.organization_id)
 JOIN report_location rl ON ( rl.report_id = ro.report_id)
-GROUP BY 1,2,4
+GROUP BY 1,2,4;
 
+
+-- create view to get summary data by country
+-- summary includes number of projects and organizations in a given country
+CREATE VIEW summary_data_by_country AS
+SELECT count(distinct ro.report_id) report_count, count(distinct o.organization_id) organization_count, c.country_id,  c.title country_title, c.adm0_code
+FROM organization o
+JOIN report_organization ro ON ( ro.organization_id = o.organization_id)
+JOIN report_location rl ON (rl.report_id = ro.report_id)
+JOIN country c ON (c.country_id = rl.country_id)
+GROUP BY c.country_id, c.title, c.adm0_code
+
+
+-- create view to get summary data by district
+-- summary includes number of projects and organizations in a given district
+CREATE VIEW summary_data_by_district AS
+SELECT count(distinct ro.report_id) report_count, count(distinct o.organization_id) organization_count, c.country_id, d.district_id, c.title country_title, d.title district_title, c.adm0_code, d.adm1_code
+FROM organization o
+JOIN report_organization ro ON ( ro.organization_id = o.organization_id)
+JOIN report_location rl ON (rl.report_id = ro.report_id)
+JOIN country c ON (c.country_id = rl.country_id)
+JOIN district d ON (d.district_id = rl.district_id)
+GROUP BY c.country_id, d.district_id, c.title, d.title, c.adm0_code, d.adm1_code
+
+
+-- create view to get summary data by site
+-- summary includes number of projects and organizations in a given site
+CREATE VIEW summary_data_by_site AS
+SELECT count(distinct ro.report_id) report_count, count(distinct o.organization_id) organization_count, c.country_id, d.district_id, s.site_id, c.title country_title, d.title district_title, s.title site_title
+FROM organization o
+JOIN report_organization ro ON ( ro.organization_id = o.organization_id)
+JOIN report_location rl ON (rl.report_id = ro.report_id)
+JOIN country c ON (c.country_id = rl.country_id)
+JOIN district d ON (d.district_id = rl.district_id)
+JOIN site s ON (s.site_id = rl.site_id)
+GROUP BY c.country_id, d.district_id, s.site_id, c.title, d.title, s.title;
+
+
+-- create view to get summary data by organization
+-- summary includes number of projects, and locations
+CREATE VIEW summary_data_by_organization AS
+SELECT o.organization_id, o.title, count(distinct ro.report_id) report_count, count(distinct rl.country_id) country_count, count(distinct d.district_id) district_count, count(distinct s.site_id) site_count, array_agg(distinct c.title) country_title, array_agg(distinct d.title) district_title, array_agg(distinct s.title) site_title
+FROM organization o
+JOIN report_organization ro ON ( ro.organization_id = o.organization_id)
+JOIN report_location rl ON (rl.report_id = ro.report_id)
+JOIN country c ON (c.country_id = rl.country_id)
+LEFT JOIN district d ON (d.district_id = rl.district_id)
+LEFT JOIN site s ON (s.site_id = rl.site_id)
+GROUP BY o.organization_id
+ORDER BY country_title
 
 
 --drop table category cascade;
@@ -284,5 +349,4 @@ GROUP BY 1,2,4
 --drop table report_location cascade;
 --
 --drop table data cascade;
---
 
