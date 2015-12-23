@@ -71,3 +71,52 @@ from gaul_2014_adm1
 where district.title = gaul_2014_adm1.adm1_name
 and adm0_name = 'Ethiopia';
 
+
+
+-- adding extra columns to the site table to include geometry and gaul ids
+ALTER TABLE site
+ADD column geom geometry;
+
+ALTER TABLE site
+ADD column geom_point geometry;
+
+ALTER TABLE site
+ADD column adm1_code integer;
+
+ALTER TABLE site
+ADD column adm2_code integer;
+
+-- updating the site names to match gaul names
+update site
+SET title = 'Central'
+WHERE title = 'Central Tigray';
+
+update site
+SET title = 'Southern'
+WHERE title = 'Southern Tigray';
+
+
+-- updating the site table with new gaul data
+update site
+set geom = gaul_2014_adm2.geom
+from gaul_2014_adm2
+where site.title = gaul_2014_adm2.adm2_name
+and adm0_name = 'Ethiopia';
+
+update site
+set geom_point = gaul_2014_adm2.geom_point
+from gaul_2014_adm2
+where site.title = gaul_2014_adm2.adm2_name
+and adm0_name = 'Ethiopia';
+
+update site
+set adm1_code = gaul_2014_adm2.adm1_code
+from gaul_2014_adm2
+where site.title = gaul_2014_adm2.adm2_name
+and adm0_name = 'Ethiopia';
+
+update site
+set adm2_code = gaul_2014_adm2.adm2_code
+from gaul_2014_adm2
+where site.title = gaul_2014_adm2.adm2_name
+and adm0_name = 'Ethiopia';
