@@ -22,6 +22,12 @@ app.use(bodyParser.json());                                     // parse applica
 app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
 app.use(methodOverride());
 
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
 app.use('/api', api);
 
 // listen (start app with node server.js) ======================================
@@ -31,6 +37,7 @@ console.log("App listening on port 4000");
 // application -------------------------------------------------------------
 app.get('*',function(req,res){
     res.sendfile('../app/index.html');     // load angular index file
+
 });
 
 app = module.exports;
