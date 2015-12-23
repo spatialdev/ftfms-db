@@ -34,23 +34,23 @@ module.exports = angular.module('SpatialViewer').controller('DetailsCtrl', funct
   };
 
   $scope.showRisks = function (details, value) {
-      details.showRisks = true;
-      value.showRisks = true;
+    details.showRisks = true;
+    value.showRisks = true;
   };
 
   $scope.hideRisks = function (details, value) {
-      details.showRisks = false;
-      value.showRisks = false;
+    details.showRisks = false;
+    value.showRisks = false;
   };
 
   $scope.showStatuses = function (details, value) {
-      details.showStatuses = true;
-      value.showStatuses = true;
+    details.showStatuses = true;
+    value.showStatuses = true;
   };
 
   $scope.hideStatuses = function (details, value) {
-      details.showStatuses = false;
-      value.showStatuses = false;
+    details.showStatuses = false;
+    value.showStatuses = false;
   };
 
   $scope.label = function (key) {
@@ -252,9 +252,9 @@ module.exports = angular.module('SpatialViewer').controller('DetailsCtrl', funct
 
   $scope.$on('details', function (event, featureLayer) {
     $scope.alertUserToClick = false;
-    var properties = featureLayer.feature.properties;
-    $scope.feature = featureLayer.feature;
-    $scope.title = $scope.featureTitle = properties.name || properties.title || 'Selected Feature';
+    var properties = featureLayer[0].properties;
+    $scope.feature = featureLayer[0];
+    $scope.title = $scope.featureTitle = properties.name || properties.district_title || 'Selected Feature';
     if (properties.salesforce) { // salesforce theme badge selected
       $scope.contextualLayer = false;
       $scope.groupings = properties.salesforce;
@@ -490,11 +490,11 @@ module.exports = angular.module('SpatialViewer').controller('DetailsCtrl', funct
     $('#DetailsPanel .InnerContainer ').css("max-height", height - innerTop - bottomHeight);
   };
 
-	//Connect the layout onresize end event
-	window.layout.panes.center.bind("layoutpaneonresize_end", $scope.resizeDetailsPanel);
+  //Connect the layout onresize end event
+  window.layout.panes.center.bind("layoutpaneonresize_end", $scope.resizeDetailsPanel);
 
-	//For Init.
-	$scope.resizeDetailsPanel();
+  //For Init.
+  $scope.resizeDetailsPanel();
 
   $scope.save = function (data, name) {
     var json = JSON.stringify(data, null, 2);
