@@ -37,7 +37,7 @@ router.get('/countries', function(req, res, next) {
 
 
     // Columns to be retrieved
-    var columnsToGet = "country_id, code, title, description, image_path";
+    var columnsToGet = "country_id, code, title, description, image_path, adm0_code";
 
     var sql = pg.featureCollectionSQL("country", columnsToGet);
     var preparedStatement = {
