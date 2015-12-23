@@ -13,17 +13,17 @@ update country
 set geom = gaul_2014_adm0.geom
 from gaul_2014_adm0
 where country.title = gaul_2014_adm0.adm0_name
-and country.title = 'Ethiopia';
+and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal');
 
 update country
 set geom_point = gaul_2014_adm0.geom_point
 from gaul_2014_adm0
 where country.title = gaul_2014_adm0.adm0_name
-and country.title = 'Ethiopia';
+and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal');
 
 update country
 set adm0_code = 79 -- this is what Ethiopia is set to in the district table
-where country.title = 'Ethiopia';
+where country.title in ('Ethiopia');
 
 
 -- adding extra columns to the district table to include geometry and gaul ids
@@ -51,25 +51,25 @@ update district
 set geom = gaul_2014_adm1.geom
 from gaul_2014_adm1
 where district.title = gaul_2014_adm1.adm1_name
-and adm0_name = 'Ethiopia';
+and adm0_name in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal');
 
 update district
 set geom_point = gaul_2014_adm1.geom_point
 from gaul_2014_adm1
 where district.title = gaul_2014_adm1.adm1_name
-and adm0_name = 'Ethiopia';
+and adm0_name in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal');
 
 update district
 set adm1_code = gaul_2014_adm1.adm1_code
 from gaul_2014_adm1
 where district.title = gaul_2014_adm1.adm1_name
-and adm0_name = 'Ethiopia';
+and adm0_name in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal');
 
 update district
 set adm0_code = gaul_2014_adm1.adm0_code
 from gaul_2014_adm1
 where district.title = gaul_2014_adm1.adm1_name
-and adm0_name = 'Ethiopia';
+and adm0_name in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal');
 
 
 
@@ -101,22 +101,22 @@ update site
 set geom = gaul_2014_adm2.geom
 from gaul_2014_adm2
 where site.title = gaul_2014_adm2.adm2_name
-and adm0_name = 'Ethiopia';
+and adm0_name in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal');
 
 update site
 set geom_point = gaul_2014_adm2.geom_point
 from gaul_2014_adm2
 where site.title = gaul_2014_adm2.adm2_name
-and adm0_name = 'Ethiopia';
+and adm0_name in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal');
 
 update site
 set adm1_code = gaul_2014_adm2.adm1_code
 from gaul_2014_adm2
 where site.title = gaul_2014_adm2.adm2_name
-and adm0_name = 'Ethiopia';
+and adm0_name in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal');
 
 update site
 set adm2_code = gaul_2014_adm2.adm2_code
 from gaul_2014_adm2
 where site.title = gaul_2014_adm2.adm2_name
-and adm0_name = 'Ethiopia';
+and adm0_name in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal');
