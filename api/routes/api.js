@@ -252,6 +252,104 @@ router.get('/organization_details/:organization_id', function(req, res, next) {
 });
 
 
+/*
+ * Get summary data by location
+ */
+router.get('/summary_by_location', function(req, res, next) {
+
+
+    // Columns to be retrieved
+    var columnsToGet = "report_count, organization_count, country_id, district_id, site_id, country_title, district_title, site_title";
+
+    var sql = pg.featureCollectionSQL("summary_data_by_location", columnsToGet);
+    var preparedStatement = {
+        name: "get_all_summary_data_by_location",
+        text: sql,
+        values:[]};
+
+    pg.queryDeferred(preparedStatement)
+        .then(function(result){
+            var results = result[0].response;
+
+            res.send(JSON.stringify(results));
+        })
+        .catch(function(err){
+            next(err);
+        });
+});
+
+
+
+/*
+ * Get summary data by country
+ */
+router.get('/country_summary_data/:adm0_code', function(req, res, next) {
+
+
+    // Columns to be retrieved
+    var columnsToGet = "report_count, organization_count, country_id, country_title, adm0_code";
+
+    var wc = {whereClause :"WHERE adm0_code = $1" };
+
+    var sql = pg.featureCollectionSQL("summary_data_by_country", columnsToGet, wc);
+    var preparedStatement = {
+        name: "get_one_country_summary_data",
+        text: sql,
+        values:[]};
+
+    pg.queryDeferred(preparedStatement, {sqlParams: [req.params.adm0_code]})
+        .then(function(result){
+            var results = result[0].response.features;
+
+            if (results) {
+                res.send(JSON.stringify(results));
+            }
+            else {
+                res.send(JSON.stringify({status:"error", msg:"Country summary does not exist"}));
+            }
+        })
+        .catch(function(err){
+            next(err);
+        });
+});
+
+
+
+/*
+ * Get summary data by district
+ */
+router.get('/district_summary_data/:adm1_code', function(req, res, next) {
+
+
+    // Columns to be retrieved
+    var columnsToGet = "report_count, organization_count, district_id, district_title, adm0_code, adm1_code";
+
+    var wc = {whereClause :"WHERE adm1_code = $1" };
+
+    var sql = pg.featureCollectionSQL("summary_data_by_district", columnsToGet, wc);
+    var preparedStatement = {
+        name: "get_one_district_summary_data",
+        text: sql,
+        values:[]};
+
+    pg.queryDeferred(preparedStatement, {sqlParams: [req.params.adm1_code]})
+        .then(function(result){
+            var results = result[0].response.features;
+
+            if (results) {
+                res.send(JSON.stringify(results));
+            }
+            else {
+                res.send(JSON.stringify({status:"error", msg:"District summary does not exist"}));
+            }
+        })
+        .catch(function(err){
+            next(err);
+        });
+});
+
+
+
 
 
 
