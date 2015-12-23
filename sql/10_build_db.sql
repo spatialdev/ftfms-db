@@ -3,6 +3,29 @@
 
 --CREATE EXTENSION postgis;
 
+DROP TABLE IF EXISTS category cascade;
+DROP TABLE IF EXISTS codelist cascade;
+DROP TABLE IF EXISTS country cascade;
+DROP TABLE IF EXISTS district cascade;
+DROP TABLE IF EXISTS indicator cascade;
+DROP TABLE IF EXISTS interval cascade;
+DROP TABLE IF EXISTS interval_range cascade;
+DROP TABLE IF EXISTS measure cascade;
+DROP TABLE IF EXISTS report cascade;
+DROP TABLE IF EXISTS note cascade;
+DROP TABLE IF EXISTS organization cascade;
+DROP TABLE IF EXISTS edition cascade;
+DROP TABLE IF EXISTS report_codelist cascade;
+DROP TABLE IF EXISTS report_indicator cascade;
+DROP TABLE IF EXISTS report_organization cascade;
+DROP TABLE IF EXISTS site cascade;
+DROP TABLE IF EXISTS report_site cascade;
+DROP TABLE IF EXISTS value cascade;
+DROP TABLE IF EXISTS measure_value cascade;
+DROP TABLE IF EXISTS report_location cascade;
+DROP TABLE IF EXISTS data cascade;
+
+
 
 create table category(
     category_id serial primary key not null,
@@ -308,45 +331,4 @@ GROUP BY o.organization_id
 ORDER BY country_title
 
 
---drop table category cascade;
---
---drop table codelist cascade;
---
---drop table country cascade;
---
---drop table district cascade;
---
---drop table indicator cascade;
---
---drop table interval cascade;
---
---drop table interval_range cascade;
---
---drop table measure cascade;
---
---drop table report cascade;
---
---drop table note cascade;
---
---drop table organization cascade;
---
---drop table edition cascade;
---
---drop table report_codelist cascade;
---
---drop table report_indicator cascade;
---
---drop table report_organization cascade;
---
---drop table site cascade;
---
---drop table report_site cascade;
---
---drop table value cascade;
---
---drop table measure_value cascade;
---
---drop table report_location cascade;
---
---drop table data cascade;
 
