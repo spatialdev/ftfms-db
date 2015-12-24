@@ -1,7 +1,7 @@
-﻿--drop schema public cascade;
---create schema public;
+﻿DROP SCHEMA public cascade;
+CREATE SCHEMA public;
 
---CREATE EXTENSION postgis;
+CREATE EXTENSION postgis;
 
 DROP TABLE IF EXISTS category cascade;
 DROP TABLE IF EXISTS codelist cascade;
@@ -227,6 +227,60 @@ create table data(
     exceeds_margin bit not null default cast(0 as bit(1))
 );
 
+CREATE EXTENSION postgres_fdw;
+
+CREATE SERVER fsp FOREIGN DATA WRAPPER postgres_fdw OPTIONS(host 'host', dbname 'dbname', port '5432');
+CREATE USER MAPPING FOR postgres SERVER fsp OPTIONS (user 'user', password 'password');
+CREATE FOREIGN TABLE gaul_2014_adm0
+(
+  adm0_name character varying(100),
+  geom geometry(MultiPolygon,4326),
+  bbox geometry(Geometry,4326),
+  gaul_2014_adm0 integer,
+  geom_point geometry(Geometry,4326)
+) SERVER fsp;
+
+CREATE FOREIGN TABLE gaul_2014_adm1
+(
+  status character varying(37),
+  disp_area character varying(3),
+  adm1_code integer,
+  adm1_name character varying(100),
+  str1_year integer,
+  exp1_year integer,
+  adm0_code integer,
+  adm0_name character varying(100),
+  shape_leng numeric,
+  shape_area numeric,
+  geom geometry(MultiPolygon,4326),
+  bbox geometry(Geometry,4326),
+  geom_point geometry(Geometry,4326),
+  population integer
+) SERVER fsp;
+
+CREATE FOREIGN TABLE gaul_2014_adm2
+(
+  adm2_code integer,
+  adm2_name character varying(100),
+  status character varying(37),
+  disp_area character varying(3),
+  str_year integer,
+  exp_year integer,
+  adm0_code integer,
+  adm0_name character varying(100),
+  adm1_code integer,
+  adm1_name character varying(100),
+  shape_leng numeric,
+  shape_area numeric,
+  geom geometry(MultiPolygon,4326),
+  bbox geometry(Geometry,4326),
+  geom_point geometry(Geometry,4326),
+  population integer
+) SERVER fsp;
+
+-- SELECT adm2_name, adm1_name, adm0_name, geom FROM gaul_2014_adm2 where adm0_name = 'Ethiopia' order by adm2_name;
+-- SELECT adm1_name, adm0_name, geom FROM gaul_2014_adm1 where adm0_name = 'Ethiopia' order by adm1_name;
+-- SELECT adm0_name, geom FROM gaul_2014_adm0 where adm0_name = 'Ethiopia' order by adm0_name;
 
 -- populate interval table
 -- interval at which data is reported
@@ -241,94 +295,3 @@ INSERT INTO value (title, type) VALUES ('Actual', 'integer');
 -- populate interval_range table
 INSERT INTO interval_range (interval_id, title,from_month, from_day, to_month, to_day)
 VALUES (1, 'Full Year', 1, 1, 12, 31);
-
-
-
--- create view with all district and country data
-CREATE VIEW country_district AS
-SELECT district.district_id, district.title as district_title, country.country_id, country.code, country.title, country.description, country.image_path
-FROM district
-JOIN country ON (district.country_id = country.country_id);
-
-
--- create view with all site, district and country data
-CREATE VIEW country_district_site AS
-SELECT site.site_id, site.village_id, site.title as site_title, site.image_path as site_image_path, district.district_id, district.title as district_title, country.country_id, country.code, country.title, country.description, country.image_path
-FROM site
-JOIN district ON (district.district_id = site.district_id)
-JOIN country ON (district.country_id = country.country_id);
-
-
--- create view report details which includes details for report endpoint
-CREATE VIEW report_details AS
-SELECT report.report_id, report.title report_title, i.indicator_id, i.title indicator_title, i.code, rl.country_id, array_agg( distinct rl.district_id) district_id, array_agg(distinct rl.site_id) site_id, o.organization_id
-FROM report
-JOIN report_indicator ri ON (report.report_id = ri.report_id)
-JOIN indicator i ON (ri.indicator_id = i.indicator_id)
-JOIN report_location rl ON ( rl.report_id = report.report_id)
-JOIN report_organization ro ON ( ro.report_id = report.report_id)
-JOIN organization o ON (o.organization_id = ro.organization_id)
-GROUP BY 1,2,3,4,5,6,9
-ORDER by i.indicator_id;
-
-
--- create view organization details which includes details for organization/prime partner endpoint
-CREATE VIEW organization_details AS
-SELECT organization.organization_id, organization.title, array_agg(distinct ro.report_id) report_id, rl.country_id, array_agg( distinct rl.district_id) district_id, array_agg(distinct rl.site_id) site_id
-FROM organization
-JOIN report_organization ro ON ( ro.organization_id = organization.organization_id)
-JOIN report_location rl ON ( rl.report_id = ro.report_id)
-GROUP BY 1,2,4;
-
-
--- create view to get summary data by country
--- summary includes number of projects and organizations in a given country
-CREATE VIEW summary_data_by_country AS
-SELECT count(distinct ro.report_id) report_count, count(distinct o.organization_id) organization_count, c.country_id,  c.title country_title, c.adm0_code
-FROM organization o
-JOIN report_organization ro ON ( ro.organization_id = o.organization_id)
-JOIN report_location rl ON (rl.report_id = ro.report_id)
-JOIN country c ON (c.country_id = rl.country_id)
-GROUP BY c.country_id, c.title, c.adm0_code
-
-
--- create view to get summary data by district
--- summary includes number of projects and organizations in a given district
-CREATE VIEW summary_data_by_district AS
-SELECT count(distinct ro.report_id) report_count, count(distinct o.organization_id) organization_count, c.country_id, d.district_id, c.title country_title, d.title district_title, c.adm0_code, d.adm1_code
-FROM organization o
-JOIN report_organization ro ON ( ro.organization_id = o.organization_id)
-JOIN report_location rl ON (rl.report_id = ro.report_id)
-JOIN country c ON (c.country_id = rl.country_id)
-JOIN district d ON (d.district_id = rl.district_id)
-GROUP BY c.country_id, d.district_id, c.title, d.title, c.adm0_code, d.adm1_code
-
-
--- create view to get summary data by site
--- summary includes number of projects and organizations in a given site
-CREATE VIEW summary_data_by_site AS
-SELECT count(distinct ro.report_id) report_count, count(distinct o.organization_id) organization_count, c.country_id, d.district_id, s.site_id, c.title country_title, d.title district_title, s.title site_title
-FROM organization o
-JOIN report_organization ro ON ( ro.organization_id = o.organization_id)
-JOIN report_location rl ON (rl.report_id = ro.report_id)
-JOIN country c ON (c.country_id = rl.country_id)
-JOIN district d ON (d.district_id = rl.district_id)
-JOIN site s ON (s.site_id = rl.site_id)
-GROUP BY c.country_id, d.district_id, s.site_id, c.title, d.title, s.title;
-
-
--- create view to get summary data by organization
--- summary includes number of projects, and locations
-CREATE VIEW summary_data_by_organization AS
-SELECT o.organization_id, o.title, count(distinct ro.report_id) report_count, count(distinct rl.country_id) country_count, count(distinct d.district_id) district_count, count(distinct s.site_id) site_count, array_agg(distinct c.title) country_title, array_agg(distinct d.title) district_title, array_agg(distinct s.title) site_title
-FROM organization o
-JOIN report_organization ro ON ( ro.organization_id = o.organization_id)
-JOIN report_location rl ON (rl.report_id = ro.report_id)
-JOIN country c ON (c.country_id = rl.country_id)
-LEFT JOIN district d ON (d.district_id = rl.district_id)
-LEFT JOIN site s ON (s.site_id = rl.site_id)
-GROUP BY o.organization_id
-ORDER BY country_title
-
-
-

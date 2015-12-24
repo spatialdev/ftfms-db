@@ -6,19 +6,17 @@
 module.exports = angular.module('SpatialViewer').controller('ThemeCtrl', function ($scope, $rootScope, $state, $stateParams, VectorProvider) {
 
   var themeNameHash = $rootScope.themeNameHash = {
-    all: 'All Countries',
-    bangladesh: 'Bangladesh',
-    india: 'India',
-    indonesia: 'Indonesia',
-    kenya: 'Kenya',
-    nigeria: 'Nigeria',
-    tanzania: 'Tanzania',
-    uganda: 'Uganda'
+    gaul0: 'Country',
+    gaul1: 'District',
+    gaul2: 'Site'
   };
 
   $scope.setTheme = function(key) {
-    $scope.themeName = themeNameHash[key];
-    $scope.setThemeQueryParam(key);
+
+    $rootScope.$broadcast('addLayer', {level: key})
+    //$scope.themeName = themeNameHash[key];
+    //$scope.setThemeQueryParam(key);
+
   };
 
   $scope.setThemeQueryParam = function (theme) {
@@ -27,7 +25,7 @@ module.exports = angular.module('SpatialViewer').controller('ThemeCtrl', functio
     $state.go(state, $stateParams);
   };
 
-  $scope.themeName = themeNameHash[$stateParams.theme] || 'All Countries';
+  $scope.themeName = themeNameHash[$stateParams.theme] || 'Country';
 
   /*
    Handling Theme Menu Animations

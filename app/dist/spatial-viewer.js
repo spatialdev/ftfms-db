@@ -3569,12 +3569,102 @@ module.exports = angular.module('SpatialViewer').controller('MainCtrl', function
 module.exports = angular.module('SpatialViewer').controller('MapCtrl', function($scope, $rootScope, $state, $stateParams, LayerConfig, VectorProvider, MapDataService) {
   //var map = L.map('map');
 
+  var gadm2filter = ["any"];
+  var gadm2layer;
+
+
+  var gadm1filter = ["any"];
+  var gadm1layer;
+
   mapboxgl.accessToken = 'pk.eyJ1IjoiZGFuaWVsZHVoaCIsImEiOiJwaGJFeTlFIn0.yN6caVQJ2ZoqDIMMht_SVQ';
 
-  MapDataService.getCountries()
+  //MapDataService.getCountries()
+  //    .then(function(response){
+  //      console.log(response);
+  //    });
+
+
+  MapDataService.getGadm2codes('Ethiopia')
       .then(function(response){
-        console.log(response);
+        response.features.forEach(function(f){
+          gadm2filter.push(["==", "adm2_code", f.properties.adm2_code])
+        })
+
+        gadm2layer = {
+          "layout": {
+            "visibility": "visible"
+          },
+          "type": "fill",
+          "source": "ethiopia_gadm_2014",
+          "id": "ethiopia_gadm2",
+          "paint": {
+            "fill-outline-color": "#000000",
+            "fill-color": "#56FF5E",
+            "fill-opacity": ".5"
+            //{
+            //"base":'1',
+            //"stops":[[3,.1],[5,.2],[7,.3],[8,.4],[9,.5],[10,.6],[11,.7]]
+            //}
+          },
+          "source-layer": "data",
+          "interactive": true,
+          "filter": gadm2filter
+        }
+
+        //map.addLayer()
+
       })
+
+
+  MapDataService.getGadm1codes('Ethiopia')
+      .then(function(response){
+        response.features.forEach(function(f){
+          gadm1filter.push(["==", "adm1_code", f.properties.adm1_code])
+        })
+
+        gadm1layer = {
+          "layout": {
+            "visibility": "visible"
+          },
+          "type": "fill",
+          "source": "ethiopia_gadm_2014",
+          "id": "ethiopia_gadm1",
+          "paint": {
+            "fill-outline-color": "#000000",
+            "fill-color": "#56FF5E",
+            "fill-opacity": ".5"
+            //{
+            //"base":'1',
+            //"stops":[[3,.1],[5,.2],[7,.3],[8,.4],[9,.5],[10,.6],[11,.7]]
+            //}
+          },
+          "source-layer": "data",
+          "interactive": true,
+          "filter": gadm1filter
+        }
+
+        //map.addLayer(gadm1layer);
+
+      })
+
+  function addLayer (level) {
+    if(level == 'gaul1') {
+      if(map.getLayer('ethiopia_gadm2') !== undefined){
+        map.removeLayer('ethiopia_gadm2')
+      }
+      map.addLayer(gadm1layer);
+    }
+    if(level == 'gaul2') {
+      if(map.getLayer('ethiopia_gadm1') !== undefined){
+        map.removeLayer('ethiopia_gadm1')
+      }
+      map.addLayer(gadm2layer);
+    }
+  }
+
+  $rootScope.$on('addLayer', function (event,res){
+    addLayer(res.level);
+  })
 
   var map = new mapboxgl.Map({
     container: 'map', // container id
@@ -3587,41 +3677,48 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function(
 
     map.addSource('ethiopia_gadm_2014', {
       type: 'vector',
-      tiles: ['http://spatialserver.spatialdev.com/services/vector-tiles/ethiopia_gadm01_2014/{z}/{x}/{y}.pbf']
+      tiles: ['http://54.200.155.189:3001/services/vector-tiles/ethiopia_gaul_2014/{z}/{x}/{y}.pbf']
     });
 
-    map.addLayer({
-      "layout": {
-        "visibility": "visible"
-      },
-      "type": "fill",
-      "source": "ethiopia_gadm_2014",
-      "id": "ethiopia_gadm",
-      "paint": {
-        "fill-outline-color": "#000000",
-        "fill-color": "#56FF5E",
-        "fill-opacity": ".5"
-        //{
-        //"base":'1',
-        //"stops":[[3,.1],[5,.2],[7,.3],[8,.4],[9,.5],[10,.6],[11,.7]]
-        //}
-      },
-      "source-layer": "data",
-      "interactive": true
-    });
+    //map.addLayer({
+    //  "layout": {
+    //    "visibility": "visible"
+    //  },
+    //  "type": "fill",
+    //  "source": "ethiopia_gadm_2014",
+    //  "id": "ethiopia_gadm",
+    //  "paint": {
+    //    "fill-outline-color": "#000000",
+    //    "fill-color": "#56FF5E",
+    //    "fill-opacity": ".5"
+    //    //{
+    //    //"base":'1',
+    //    //"stops":[[3,.1],[5,.2],[7,.3],[8,.4],[9,.5],[10,.6],[11,.7]]
+    //    //}
+    //  },
+    //  "source-layer": "data",
+    //  "interactive": true,
+    //  "filter": ["any", ["==","adm2_code", 149295],
+    //      ["==","adm2_code", 149295],
+    //    ["==","adm2_code", 149298],
+    //    ["==","adm2_code", 149295],
+    //    ["==","adm2_code", 149289],
+    //    ["==","adm2_code", 40850],
+    //    ["==","adm2_code", 149287]]
+    //});
 
-    map.addLayer({
-      "id": "route-click",
-      "type": "fill",
-      "source": "ethiopia_gadm_2014",
-      "source-layer": "data",
-      "layout": {},
-      "paint": {
-        "fill-color": "#627BC1",
-        "fill-opacity":.2
-      },
-      "filter": ["==", "adm1_code", ""]
-    });
+    //map.addLayer({
+    //  "id": "route-click",
+    //  "type": "fill",
+    //  "source": "ethiopia_gadm_2014",
+    //  "source-layer": "data",
+    //  "layout": {},
+    //  "paint": {
+    //    "fill-color": "#627BC1",
+    //    "fill-opacity":.2
+    //  },
+    //  "filter": ["!=", "adm2_code", null]
+    //});
 
     map.on('click', function (e) {
       // Use featuresAt to get features within a given radius of the click event
@@ -3633,9 +3730,9 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function(
         if (features.length) {
           // Get coordinates from the symbol and center the map on those coordinates
           //map.flyTo({center: features[0].geometry.coordinates});
-          console.log(features[0].properties.adm0_code + " " + features[1].properties.adm1_code);
+          //console.log(features[0].properties.adm0_code + " " + features[1].properties.adm1_code);
 
-          map.setFilter("route-click", ["==", "adm1_code", features[1].properties.adm1_code]);
+          map.setFilter("route-click", ["==", "adm2_code", features[1].properties.adm2_code]);
 
           MapDataService.getDistricts(features[1].properties.adm1_code)
               .then(function(response){
@@ -4122,19 +4219,17 @@ angular.module('SpatialViewer')
 module.exports = angular.module('SpatialViewer').controller('ThemeCtrl', function ($scope, $rootScope, $state, $stateParams, VectorProvider) {
 
   var themeNameHash = $rootScope.themeNameHash = {
-    all: 'All Countries',
-    bangladesh: 'Bangladesh',
-    india: 'India',
-    indonesia: 'Indonesia',
-    kenya: 'Kenya',
-    nigeria: 'Nigeria',
-    tanzania: 'Tanzania',
-    uganda: 'Uganda'
+    gaul0: 'Country',
+    gaul1: 'District',
+    gaul2: 'Site'
   };
 
   $scope.setTheme = function(key) {
-    $scope.themeName = themeNameHash[key];
-    $scope.setThemeQueryParam(key);
+
+    $rootScope.$broadcast('addLayer', {level: key})
+    //$scope.themeName = themeNameHash[key];
+    //$scope.setThemeQueryParam(key);
+
   };
 
   $scope.setThemeQueryParam = function (theme) {
@@ -4143,7 +4238,7 @@ module.exports = angular.module('SpatialViewer').controller('ThemeCtrl', functio
     $state.go(state, $stateParams);
   };
 
-  $scope.themeName = themeNameHash[$stateParams.theme] || 'All Countries';
+  $scope.themeName = themeNameHash[$stateParams.theme] || 'Country';
 
   /*
    Handling Theme Menu Animations
@@ -4747,6 +4842,45 @@ var app = angular.module("SpatialViewer")
             // CKAN API for project description
             return deferred.promise;
         };
+
+        service.getGadm2codes = function (country){
+            var deferred = $q.defer();
+
+            var url =" http://54.200.155.189:3001/services/tables/site/query?where=adm0_name%20%3D%20'" + country + "'%20and%20adm2_code%20is%20not%20null&returnfields=adm2_code&format=geojson&returnGeometry=no&returnGeometryEnvelopes=no"
+
+            // Cadasta API
+            $http.get(url, { cache: true })
+                .then(function(response) {
+                    if(response.data && response.data.error) {
+                        deferred.reject(response.data.error);
+                    }
+                    deferred.resolve(response.data);
+                }, function(err) {
+                    deferred.reject(err);
+                });
+
+            // CKAN API for project description
+            return deferred.promise;
+        }
+
+        service.getGadm1codes = function (country){
+            var deferred = $q.defer();
+
+            var url = "http://54.200.155.189:3001/services/tables/district/query?where=adm0_name%20%3D%20'"  + country +"'%20and%20adm1_code%20is%20not%20null&returnfields=adm1_code&format=geojson&returnGeometry=no&returnGeometryEnvelopes=no"
+            $http.get(url, { cache: true })
+                .then(function(response) {
+                    if(response.data && response.data.error) {
+                        deferred.reject(response.data.error);
+                    }
+                    deferred.resolve(response.data);
+                }, function(err) {
+                    deferred.reject(err);
+                });
+
+            // CKAN API for project description
+            return deferred.promise;
+        }
+
 
         return service;
     }])

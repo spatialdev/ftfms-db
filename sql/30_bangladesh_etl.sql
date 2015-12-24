@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS bangladesh_raw;
+﻿DROP TABLE IF EXISTS bangladesh_raw;
 DROP TABLE IF EXISTS bangladesh_updated;
 DROP TABLE IF EXISTS bangladesh_geography;
 -- TRUNCATE TABLE report_indicator;
@@ -52,7 +52,7 @@ locations,
 admin0,
 admin1,
 admin2,
-measure) FROM '/Users/sarahbindman/Documents/CIAT/FTF_DATA/clean_data/clean_bangladesh_12_22.csv'
+measure) FROM '/Users/admin/Desktop/ftfms/clean_bangladesh_12_22.csv'
 WITH DELIMITER ',' CSV HEADER;
 
 
@@ -159,7 +159,7 @@ INSERT INTO edition (report_id, interval_range_id, year)
 
 -- populate report indicator table
 INSERT INTO report_indicator (indicator_id, report_id)
-    SELECT distinct(indicator.indicator_id), report.report_id
+    SELECT distinct indicator.indicator_id, report.report_id
     FROM (
         select regexp_split_to_array(indicator, ':'), -- split into multiple columns
 	implementing_mechanism
@@ -167,19 +167,27 @@ INSERT INTO report_indicator (indicator_id, report_id)
     ) as dt(a)
     JOIN indicator ON (indicator.title = a[2])
     JOIN report ON (report.title = implementing_mechanism)
-    GROUP BY 1,2
-    ORDER BY 1 asc;
+    EXCEPT
+    SELECT distinct indicator_id, report_id FROM report_indicator; 
 
 
+    --GROUP BY 1,2
+    --ORDER BY 1 asc;
+
+    --select * from bangladesh_updated order by implementing_mechanism;
+    --select * from report where report_id = 35
+    --select * from report_location where report_id = 35
+    --select * from report_indicator where report_id = 35
+    
 -- populate report organization table
 INSERT INTO report_organization (organization_id, report_id)
     SELECT  organization.organization_id, report.report_id
     from bangladesh_updated
-
     JOIN organization ON (organization.title = bangladesh_updated.prime_partner)
     JOIN report ON (report.title = implementing_mechanism)
-    GROUP BY 1,2
-    ORDER BY 1 asc;
+    EXCEPT select organization_id, report_id from report_organization;
+    --GROUP BY 1,2
+    --ORDER BY 1 asc;
 
 
 -- populate report site table
@@ -196,12 +204,12 @@ FROM (
 		FROM bangladesh_updated
 	    ) as parse_bangladesh_updated
 	) as dt(a)
-GROUP BY 1,2,3,4
+--GROUP BY 1,2,3,4
 ORDER BY 3 ) geo
 JOIN report ON (report.title = implementing_mechanism)
 JOIN site ON (site.title = admin2)
-GROUP BY 1,2;
-
+--GROUP BY 1,2
+EXCEPT SELECT report_id, site_id FROM report_site;
 
 
 -- populate report location table
@@ -250,7 +258,7 @@ INSERT INTO measure_value (measure_id, value_id)
         FROM measure_value;
 
 -- load data into data table
-select * from value;
+-- select * from value;
 -- load in data for target 2010
 -- data is target_2010
 -- edition year is 2010
