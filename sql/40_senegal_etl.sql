@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS senegal_raw;
+﻿DROP TABLE IF EXISTS senegal_raw;
 DROP TABLE IF EXISTS senegal_updated;
 DROP TABLE IF EXISTS senegal_geography;
 -- TRUNCATE TABLE report_indicator;
@@ -52,7 +52,7 @@ locations,
 admin0,
 admin1,
 admin2,
-measure) FROM '/Users/sarahbindman/Documents/CIAT/FTF_DATA/clean_data/clean_senegal_12_18.csv'
+measure) FROM '/Users/admin/Desktop/ftfms/clean_senegal_12_18.csv'
 WITH DELIMITER ',' CSV HEADER;
 
 
@@ -65,7 +65,7 @@ FROM senegal_raw;
 
 -- update senegal_updated
 UPDATE senegal_updated
-SET locations = 'Bangladesh'
+SET locations = 'Senegal'
 WHERE locations is null;
 
 
@@ -528,4 +528,3 @@ LEFT JOIN edition e ON (e.report_id = r.report_id AND e.year = dt.baseline_year)
 JOIN indicator i ON (i.title = dt.indicator[2])
 LEFT JOIN measure m ON (m.title = dt.measure)
 WHERE v.title = 'Baseline';
-

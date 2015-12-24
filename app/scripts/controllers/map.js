@@ -6,12 +6,102 @@
 module.exports = angular.module('SpatialViewer').controller('MapCtrl', function($scope, $rootScope, $state, $stateParams, LayerConfig, VectorProvider, MapDataService) {
   //var map = L.map('map');
 
+  var gadm2filter = ["any"];
+  var gadm2layer;
+
+
+  var gadm1filter = ["any"];
+  var gadm1layer;
+
   mapboxgl.accessToken = 'pk.eyJ1IjoiZGFuaWVsZHVoaCIsImEiOiJwaGJFeTlFIn0.yN6caVQJ2ZoqDIMMht_SVQ';
 
-  MapDataService.getCountries()
+  //MapDataService.getCountries()
+  //    .then(function(response){
+  //      console.log(response);
+  //    });
+
+
+  MapDataService.getGadm2codes('Ethiopia')
       .then(function(response){
-        console.log(response);
+        response.features.forEach(function(f){
+          gadm2filter.push(["==", "adm2_code", f.properties.adm2_code])
+        })
+
+        gadm2layer = {
+          "layout": {
+            "visibility": "visible"
+          },
+          "type": "fill",
+          "source": "ethiopia_gadm_2014",
+          "id": "ethiopia_gadm2",
+          "paint": {
+            "fill-outline-color": "#000000",
+            "fill-color": "#56FF5E",
+            "fill-opacity": ".5"
+            //{
+            //"base":'1',
+            //"stops":[[3,.1],[5,.2],[7,.3],[8,.4],[9,.5],[10,.6],[11,.7]]
+            //}
+          },
+          "source-layer": "data",
+          "interactive": true,
+          "filter": gadm2filter
+        }
+
+        //map.addLayer()
+
       })
+
+
+  MapDataService.getGadm1codes('Ethiopia')
+      .then(function(response){
+        response.features.forEach(function(f){
+          gadm1filter.push(["==", "adm1_code", f.properties.adm1_code])
+        })
+
+        gadm1layer = {
+          "layout": {
+            "visibility": "visible"
+          },
+          "type": "fill",
+          "source": "ethiopia_gadm_2014",
+          "id": "ethiopia_gadm1",
+          "paint": {
+            "fill-outline-color": "#000000",
+            "fill-color": "#56FF5E",
+            "fill-opacity": ".5"
+            //{
+            //"base":'1',
+            //"stops":[[3,.1],[5,.2],[7,.3],[8,.4],[9,.5],[10,.6],[11,.7]]
+            //}
+          },
+          "source-layer": "data",
+          "interactive": true,
+          "filter": gadm1filter
+        }
+
+        //map.addLayer(gadm1layer);
+
+      })
+
+  function addLayer (level) {
+    if(level == 'gaul1') {
+      if(map.getLayer('ethiopia_gadm2') !== undefined){
+        map.removeLayer('ethiopia_gadm2')
+      }
+      map.addLayer(gadm1layer);
+    }
+    if(level == 'gaul2') {
+      if(map.getLayer('ethiopia_gadm1') !== undefined){
+        map.removeLayer('ethiopia_gadm1')
+      }
+      map.addLayer(gadm2layer);
+    }
+  }
+
+  $rootScope.$on('addLayer', function (event,res){
+    addLayer(res.level);
+  })
 
   var map = new mapboxgl.Map({
     container: 'map', // container id
@@ -24,41 +114,48 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function(
 
     map.addSource('ethiopia_gadm_2014', {
       type: 'vector',
-      tiles: ['http://spatialserver.spatialdev.com/services/vector-tiles/ethiopia_gadm01_2014/{z}/{x}/{y}.pbf']
+      tiles: ['http://54.200.155.189:3001/services/vector-tiles/ethiopia_gaul_2014/{z}/{x}/{y}.pbf']
     });
 
-    map.addLayer({
-      "layout": {
-        "visibility": "visible"
-      },
-      "type": "fill",
-      "source": "ethiopia_gadm_2014",
-      "id": "ethiopia_gadm",
-      "paint": {
-        "fill-outline-color": "#000000",
-        "fill-color": "#56FF5E",
-        "fill-opacity": ".5"
-        //{
-        //"base":'1',
-        //"stops":[[3,.1],[5,.2],[7,.3],[8,.4],[9,.5],[10,.6],[11,.7]]
-        //}
-      },
-      "source-layer": "data",
-      "interactive": true
-    });
+    //map.addLayer({
+    //  "layout": {
+    //    "visibility": "visible"
+    //  },
+    //  "type": "fill",
+    //  "source": "ethiopia_gadm_2014",
+    //  "id": "ethiopia_gadm",
+    //  "paint": {
+    //    "fill-outline-color": "#000000",
+    //    "fill-color": "#56FF5E",
+    //    "fill-opacity": ".5"
+    //    //{
+    //    //"base":'1',
+    //    //"stops":[[3,.1],[5,.2],[7,.3],[8,.4],[9,.5],[10,.6],[11,.7]]
+    //    //}
+    //  },
+    //  "source-layer": "data",
+    //  "interactive": true,
+    //  "filter": ["any", ["==","adm2_code", 149295],
+    //      ["==","adm2_code", 149295],
+    //    ["==","adm2_code", 149298],
+    //    ["==","adm2_code", 149295],
+    //    ["==","adm2_code", 149289],
+    //    ["==","adm2_code", 40850],
+    //    ["==","adm2_code", 149287]]
+    //});
 
-    map.addLayer({
-      "id": "route-click",
-      "type": "fill",
-      "source": "ethiopia_gadm_2014",
-      "source-layer": "data",
-      "layout": {},
-      "paint": {
-        "fill-color": "#627BC1",
-        "fill-opacity":.2
-      },
-      "filter": ["==", "adm1_code", ""]
-    });
+    //map.addLayer({
+    //  "id": "route-click",
+    //  "type": "fill",
+    //  "source": "ethiopia_gadm_2014",
+    //  "source-layer": "data",
+    //  "layout": {},
+    //  "paint": {
+    //    "fill-color": "#627BC1",
+    //    "fill-opacity":.2
+    //  },
+    //  "filter": ["!=", "adm2_code", null]
+    //});
 
     map.on('click', function (e) {
       // Use featuresAt to get features within a given radius of the click event
@@ -70,9 +167,9 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function(
         if (features.length) {
           // Get coordinates from the symbol and center the map on those coordinates
           //map.flyTo({center: features[0].geometry.coordinates});
-          console.log(features[0].properties.adm0_code + " " + features[1].properties.adm1_code);
+          //console.log(features[0].properties.adm0_code + " " + features[1].properties.adm1_code);
 
-          map.setFilter("route-click", ["==", "adm1_code", features[1].properties.adm1_code]);
+          map.setFilter("route-click", ["==", "adm2_code", features[1].properties.adm2_code]);
 
           MapDataService.getDistricts(features[1].properties.adm1_code)
               .then(function(response){

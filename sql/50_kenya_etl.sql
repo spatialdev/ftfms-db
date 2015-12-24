@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS kenya_raw;
+﻿DROP TABLE IF EXISTS kenya_raw;
 DROP TABLE IF EXISTS kenya_updated;
 DROP TABLE IF EXISTS kenya_geography;
 -- TRUNCATE TABLE report_indicator;
@@ -52,7 +52,7 @@ locations,
 admin0,
 admin1,
 admin2,
-measure) FROM '/Users/sarahbindman/Documents/CIAT/FTF_DATA/clean_data/clean_kenya_12_18.csv'
+measure) FROM '/Users/admin/Desktop/ftfms/clean_kenya_12_18.csv'
 WITH DELIMITER ',' CSV HEADER;
 
 
@@ -65,7 +65,7 @@ FROM kenya_raw;
 
 -- update kenya_updated
 UPDATE kenya_updated
-SET locations = 'Bangladesh'
+SET locations = 'Kenya'
 WHERE locations is null;
 
 
