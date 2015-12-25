@@ -6,9 +6,10 @@
 module.exports = angular.module('SpatialViewer').controller('MapCtrl', function($scope, $rootScope, $state, $stateParams, LayerConfig, VectorProvider, MapDataService) {
   //var map = L.map('map');
 
+  var mapLoaded = false;
+
   var gadm2filter = ["any"];
   var gadm2layer;
-
 
   var gadm1filter = ["any"];
   var gadm1layer;
@@ -105,17 +106,21 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function(
 
   var map = new mapboxgl.Map({
     container: 'map', // container id
-    style: 'mapbox://styles/mapbox/streets-v8', //stylesheet location
+    //style: 'mapbox://styles/mapbox/streets-v8', //stylesheet location
     center: [41.433007, 8.145159], // starting position
     zoom: 4 // starting zoom
   });
 
+  //map.once('load',function(){
+  //  redraw()
+  //})
+
   map.on('style.load', function () {
 
-    map.addSource('ethiopia_gadm_2014', {
-      type: 'vector',
-      tiles: ['http://54.200.155.189:3001/services/vector-tiles/ethiopia_gaul_2014/{z}/{x}/{y}.pbf']
-    });
+    //map.addSource('ethiopia_gadm_2014', {
+    //  type: 'vector',
+    //  tiles: ['http://54.200.155.189:3001/services/vector-tiles/ethiopia_gaul_2014/{z}/{x}/{y}.pbf']
+    //});
 
     //map.addLayer({
     //  "layout": {
@@ -183,6 +188,7 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function(
     console.log(map);
 
   });
+
   var lastLayersStr = '';
   var lastBasemapUrl = null;
   var basemapLayer = null;
@@ -200,56 +206,61 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function(
     $state.go(state, $stateParams);
   };
   //
-  //function redraw() {
-  //  var lat = parseFloat($stateParams.lat)   || 0;
-  //  var lng = parseFloat($stateParams.lng)   || 0;
-  //  var zoom = parseFloat($stateParams.zoom) || 8;
-  //  layersStr = $stateParams.layers || LayerConfig.osm.url;
-  //  var layers = layersStr.split(',');
-  //
-  //  // first layer should always be treated as the basemap
-  //  var basemap = LayerConfig.find(layers[0]) || LayerConfig.osm.url;
-  //  if (typeof basemap === 'string') {
-  //    var basemapUrl = basemap;
-  //  } else {
-  //    var basemapUrl = basemap.url;
-  //  }
-  //  overlayNames = layers.slice(1);
-  //
-  //  if (lastBasemapUrl !== basemapUrl && typeof map === 'object') {
-  //    if (basemapLayer) {
-  //      map.removeLayer(basemapLayer);
-  //    }
-  //    basemapLayer = L.tileLayer(basemapUrl).addTo(map);
-  //
-  //    basemapLayer.on('load', function () {
-  //      //Move to back
-  //      basemapLayer.bringToBack();
-  //    });
-  //  }
-  //
-  //  if (lastLayersStr !== layersStr) {
-  //    drawOverlays();
-  //  }
-  //
-  //  if (theme != $stateParams.theme || filters != $stateParams.filters) { // null and undefined should be ==
-  //    theme = $stateParams.theme;
-  //    filters = $stateParams.filters;
-  //  }
-  //
-  //  var c = $scope.center = {
-  //    lat: lat,
-  //    lng: lng,
-  //    zoom: zoom
-  //  };
-  //
-  //  if (typeof map === 'object' && (c.lat != 0 && c.lng !=0)) {
-  //    map.setView([c.lat, c.lng], zoom);
-  //  }
-  //
-  //  lastLayersStr = layersStr;
-  //  lastBasemapUrl = basemapUrl;
-  //}
+
+  function redraw() {
+    var lat = parseFloat($stateParams.lat)   || 0;
+    var lng = parseFloat($stateParams.lng)   || 0;
+    var zoom = parseFloat($stateParams.zoom) || 8;
+    layersStr = $stateParams.layers || LayerConfig.osm.url;
+    var layers = layersStr.split(',');
+
+    // first layer should always be treated as the basemap
+    var basemap = LayerConfig.find(layers[0]) || LayerConfig.osm.url;
+    if (typeof basemap === 'string') {
+      var basemapUrl = basemap;
+    } else {
+      var basemapUrl = basemap.url;
+    }
+    overlayNames = layers.slice(1);
+
+    if (lastBasemapUrl !== basemapUrl && typeof map === 'object') {
+      if (basemapLayer) {
+        //map.removeLayer(basemapLayer);
+      }
+      // draw gl map
+
+      basemapLayer = map.setStyle(basemapUrl);
+
+      //basemapLayer.on('load', function () {
+      //  //Move to back
+      //  basemapLayer.bringToBack();
+      //});
+    }
+
+    if (lastLayersStr !== layersStr) {
+      if(map.loaded() == true){
+        drawOverlays();
+      }
+    }
+
+    if (theme != $stateParams.theme || filters != $stateParams.filters) { // null and undefined should be ==
+      theme = $stateParams.theme;
+      filters = $stateParams.filters;
+    }
+
+    var c = $scope.center = {
+      lat: lat,
+      lng: lng,
+      zoom: zoom
+    };
+
+    if (typeof map === 'object' && (c.lat != 0 && c.lng !=0)) {
+      //map.setView([c.lat, c.lng], zoom);
+    }
+
+    lastLayersStr = layersStr;
+    lastBasemapUrl = basemapUrl;
+  }
   //
   //
   /***
@@ -290,7 +301,9 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function(
         || $stateParams.filters !== filters   ) {
 
       console.log('map.js route-update Updating Map...');
-      //redraw();
+      if(map.loaded() == true){
+        redraw();
+      }
     }
 
   });
@@ -345,107 +358,139 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function(
   //}
   //
   //
-  //function drawOverlays() {
-  //  for (var i = 0, len = overlayNames.length; i < len; ++i) {
-  //    var overlayName = overlayNames[i];
-  //    var currOverlay = overlays[i];
-  //
-  //    if (currOverlay && currOverlay.overlayName === overlayName) {
-  //      continue; // layer is already there, continue on!
-  //    }
-  //
-  //    // remove the current layer that is not what should be that layer in the list
-  //    else if (currOverlay && currOverlay._map) {
-  //      if (currOverlay.destroyResource) currOverlay.destroyResource();
-  //      map.removeLayer(currOverlay);
-  //    }
-  //
-  //    if (typeof LayerConfig[overlayName] === 'object'
-  //      && LayerConfig[overlayName].type.toLowerCase() === 'pbf') {
-  //
-  //      var cfg = LayerConfig[overlayName];
-  //      var layer = new L.TileLayer.PBFSource(cfg);
-  //      layer.addTo(map);
-  //
-  //      map.on('click', function(e) {
-  //        //Take the click event and pass it to the group layers.
-  //        pbfSource.onClick(e, function (evt) {
-  //          if (evt && evt.feature) {
-  //            console.log(['Clicked PBF Feature', evt.feature.properties]);
-  //          }
-  //        });
-  //      });
-  //
-  //      map.on('layerremove', function(removed) {
-  //        //This is the layer that was removed.
-  //        //If it is a TileLayer.PBFSource, then call a method to actually remove the children, too.
-  //        if(removed.layer.removeChildLayers){
-  //          removed.layer.removeChildLayers(map);
-  //        }
-  //      });
-  //
-  //    }
-  //
-  //    // try for WMS (not a vector layer)
-  //    // if things get more fancy with wms, it should get its own factory
-  //    else if (typeof LayerConfig[overlayName] === 'object'
-  //      && LayerConfig[overlayName].type.toLowerCase() === 'wms') {
-  //
-  //      var cfg = LayerConfig[overlayName];
-  //      var layer = L.tileLayer.wms(cfg.url, {
-  //        format: cfg.format || 'image/png',
-  //        transparent: cfg.transparent || true,
-  //        layers: cfg.layers
-  //      });
-  //      layer.addTo(map);
-  //    }
-  //
-  //    /**
-  //     * Tiles that are an overlay. OSM / Google / Mapnik tend to make tiles in this format.
-  //     */
-  //    else if (typeof LayerConfig[overlayName] === 'object'
-  //      && LayerConfig[overlayName].type.toLowerCase() === 'xyz') {
-  //
-  //      var cfg = LayerConfig[overlayName];
-  //      var layer = L.tileLayer(cfg.url, {
-  //        opacity: cfg.opacity || 0.5
-  //      });
-  //      layer.addTo(map);
-  //    }
-  //
-  //    /**
-  //     * TMS flips the y. GeoServer often serves this.
-  //     */
-  //    else if (typeof LayerConfig[overlayName] === 'object'
-  //      && LayerConfig[overlayName].type.toLowerCase() === 'tms') {
-  //      var cfg = LayerConfig[overlayName];
-  //      var layer = L.tileLayer(cfg.url, {
-  //        opacity: cfg.opacity || 0.5,
-  //        tms: true
-  //      });
-  //      layer.addTo(map);
-  //    }
-  //
-  //    // if its not wms, its a vector layer
-  //    else {
-  //      var vecRes = VectorProvider.createResource(overlayName);
-  //      var layer = vecRes.getLayer();
-  //      layer.addTo(map);
-  //    }
-  //
-  //    layer.overlayName = overlayName;
-  //    overlays[i] = layer;
-  //
-  //  }
-  //
-  //  // there are more overlays left in the list, less layers specified in route
-  //  // we need to remove those too.
-  //  for (var len2 = overlays.length; i < len2; ++i) {
-  //    if (overlays[i].destroyResource) overlays[i].destroyResource();
-  //    map.removeLayer(overlays[i]);
-  //    delete overlays[i];
-  //  }
-  //
-  //}
+  function drawOverlays() {
+    for (var i = 0, len = overlayNames.length; i < len; ++i) {
+      var overlayName = overlayNames[i];
+      var currOverlay = overlays[i];
+
+      if (currOverlay && currOverlay.overlayName === overlayName) {
+        continue; // layer is already there, continue on!
+      }
+
+      // remove the current layer that is not what should be that layer in the list
+      else if (currOverlay && currOverlay._map) {
+        if (currOverlay.destroyResource) currOverlay.destroyResource();
+        map.removeLayer(currOverlay);
+      }
+
+      if (typeof LayerConfig[overlayName] === 'object'
+        && LayerConfig[overlayName]["layer-type"].toLowerCase() === 'vector') {
+
+        var cfg = LayerConfig[overlayName];
+
+        // make sure make is finsihed loading
+
+        // check to see if source exists
+        if(map.getSource(cfg.source) == undefined){
+
+        map.addSource(cfg.source, {
+          type: cfg["layer-type"],
+          tiles: [cfg.url]
+        });
+
+        }
+
+        map.addLayer(cfg);
+
+        //layer.addTo(map);
+
+        //map.on('load', function(e){
+        //
+        //  layer = map.addSource(cfg.source, {
+        //    type: cfg["layer-type"],
+        //    tiles: [cfg.url]
+        //  });
+        //
+        //  var tempcfg = LayerConfig[overlayName];
+        //
+        //  for (var key in tempcfg.style){
+        //    tempcfg[key] = cfg.style[key];
+        //  }
+        //
+        //  delete tempcfg.style;
+        //
+        //  map.addLayer (tempcfg);
+        //})
+
+        map.on('click', function(e) {
+          //Take the click event and pass it to the group layers.
+          pbfSource.onClick(e, function (evt) {
+            if (evt && evt.feature) {
+              console.log(['Clicked PBF Feature', evt.feature.properties]);
+            }
+          });
+        });
+
+        map.on('layerremove', function(removed) {
+          //This is the layer that was removed.
+          //If it is a TileLayer.PBFSource, then call a method to actually remove the children, too.
+          if(removed.layer.removeChildLayers){
+            removed.layer.removeChildLayers(map);
+          }
+        });
+
+      }
+
+      // try for WMS (not a vector layer)
+      // if things get more fancy with wms, it should get its own factory
+      else if (typeof LayerConfig[overlayName] === 'object'
+        && LayerConfig[overlayName].type.toLowerCase() === 'wms') {
+
+        var cfg = LayerConfig[overlayName];
+        var layer = L.tileLayer.wms(cfg.url, {
+          format: cfg.format || 'image/png',
+          transparent: cfg.transparent || true,
+          layers: cfg.layers
+        });
+        layer.addTo(map);
+      }
+
+      /**
+       * Tiles that are an overlay. OSM / Google / Mapnik tend to make tiles in this format.
+       */
+      else if (typeof LayerConfig[overlayName] === 'object'
+        && LayerConfig[overlayName].type.toLowerCase() === 'xyz') {
+
+        var cfg = LayerConfig[overlayName];
+        var layer = L.tileLayer(cfg.url, {
+          opacity: cfg.opacity || 0.5
+        });
+        layer.addTo(map);
+      }
+
+      /**
+       * TMS flips the y. GeoServer often serves this.
+       */
+      else if (typeof LayerConfig[overlayName] === 'object'
+        && LayerConfig[overlayName].type.toLowerCase() === 'tms') {
+        var cfg = LayerConfig[overlayName];
+        var layer = L.tileLayer(cfg.url, {
+          opacity: cfg.opacity || 0.5,
+          tms: true
+        });
+        layer.addTo(map);
+      }
+
+      // if its not wms, its a vector layer
+      else {
+        var vecRes = VectorProvider.createResource(overlayName);
+        var layer = vecRes.getLayer();
+        layer.addTo(map);
+      }
+
+      cfg.overlayName = overlayName;
+      overlays[i] = cfg;
+
+    }
+
+    // there are more overlays left in the list, less layers specified in route
+    // we need to remove those too.
+    for (var len2 = overlays.length; i < len2; ++i) {
+      //if (overlays[i].destroyResource) overlays[i].destroyResource();
+      map.removeLayer(overlays[i].id);
+      delete overlays[i];
+    }
+
+  }
 
 });
