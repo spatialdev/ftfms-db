@@ -3567,52 +3567,24 @@ module.exports = angular.module('SpatialViewer').controller('MainCtrl', function
  */
 
 module.exports = angular.module('SpatialViewer').controller('MapCtrl', function($scope, $rootScope, $state, $stateParams, LayerConfig, VectorProvider, MapDataService) {
-  //var map = L.map('map');
-
-  var mapLoaded = false;
 
   var gadm2filter = ["any"];
-  var gadm2layer;
-
   var gadm1filter = ["any"];
-  var gadm1layer;
 
   mapboxgl.accessToken = 'pk.eyJ1IjoiZGFuaWVsZHVoaCIsImEiOiJwaGJFeTlFIn0.yN6caVQJ2ZoqDIMMht_SVQ';
 
-  //MapDataService.getCountries()
-  //    .then(function(response){
-  //      console.log(response);
-  //    });
-
+  var map = new mapboxgl.Map({
+    container: 'map', // container id
+    //style: 'mapbox://styles/mapbox/streets-v8', //stylesheet location
+    center: [41.433007, 8.145159], // starting position
+    zoom: 4 // starting zoom
+  });
 
   MapDataService.getGadm2codes('Ethiopia')
       .then(function(response){
         response.features.forEach(function(f){
           gadm2filter.push(["==", "adm2_code", f.properties.adm2_code])
         })
-
-        gadm2layer = {
-          "layout": {
-            "visibility": "visible"
-          },
-          "type": "fill",
-          "source": "ethiopia_gadm_2014",
-          "id": "ethiopia_gadm2",
-          "paint": {
-            "fill-outline-color": "#000000",
-            "fill-color": "#56FF5E",
-            "fill-opacity": ".5"
-            //{
-            //"base":'1',
-            //"stops":[[3,.1],[5,.2],[7,.3],[8,.4],[9,.5],[10,.6],[11,.7]]
-            //}
-          },
-          "source-layer": "data",
-          "interactive": true,
-          "filter": gadm2filter
-        }
-
-        //map.addLayer()
 
       })
 
@@ -3622,29 +3594,6 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function(
         response.features.forEach(function(f){
           gadm1filter.push(["==", "adm1_code", f.properties.adm1_code])
         })
-
-        gadm1layer = {
-          "layout": {
-            "visibility": "visible"
-          },
-          "type": "fill",
-          "source": "ethiopia_gadm_2014",
-          "id": "ethiopia_gadm1",
-          "paint": {
-            "fill-outline-color": "#000000",
-            "fill-color": "#56FF5E",
-            "fill-opacity": ".5"
-            //{
-            //"base":'1',
-            //"stops":[[3,.1],[5,.2],[7,.3],[8,.4],[9,.5],[10,.6],[11,.7]]
-            //}
-          },
-          "source-layer": "data",
-          "interactive": true,
-          "filter": gadm1filter
-        }
-
-        //map.addLayer(gadm1layer);
 
       })
 
@@ -3663,97 +3612,64 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function(
     }
   }
 
-  $rootScope.$on('addLayer', function (event,res){
-    addLayer(res.level);
+  // check if overLays in url have been drawn on map
+  map.once('load',function(){
+
+    var missingLayers = [];
+    overlayNames.forEach(function(v,i){
+      var layer = LayerConfig[v];
+
+      if(map.getLayer(layer.id) == undefined){
+        missingLayers.push(layer);
+      }
+
+    })
+
+    // draw overlays
+    if (missingLayers.length > 0) {
+      drawOverlays();
+    }
+
   })
 
-  var map = new mapboxgl.Map({
-    container: 'map', // container id
-    //style: 'mapbox://styles/mapbox/streets-v8', //stylesheet location
-    center: [41.433007, 8.145159], // starting position
-    zoom: 4 // starting zoom
-  });
+  // check for new map style, if so, then reload layers
+  map.on('style.load', function(){
 
-  //map.once('load',function(){
-  //  redraw()
-  //})
-
-  map.on('style.load', function () {
-
-    //map.addSource('ethiopia_gadm_2014', {
-    //  type: 'vector',
-    //  tiles: ['http://54.200.155.189:3001/services/vector-tiles/ethiopia_gaul_2014/{z}/{x}/{y}.pbf']
-    //});
-
-    //map.addLayer({
-    //  "layout": {
-    //    "visibility": "visible"
-    //  },
-    //  "type": "fill",
-    //  "source": "ethiopia_gadm_2014",
-    //  "id": "ethiopia_gadm",
-    //  "paint": {
-    //    "fill-outline-color": "#000000",
-    //    "fill-color": "#56FF5E",
-    //    "fill-opacity": ".5"
-    //    //{
-    //    //"base":'1',
-    //    //"stops":[[3,.1],[5,.2],[7,.3],[8,.4],[9,.5],[10,.6],[11,.7]]
-    //    //}
-    //  },
-    //  "source-layer": "data",
-    //  "interactive": true,
-    //  "filter": ["any", ["==","adm2_code", 149295],
-    //      ["==","adm2_code", 149295],
-    //    ["==","adm2_code", 149298],
-    //    ["==","adm2_code", 149295],
-    //    ["==","adm2_code", 149289],
-    //    ["==","adm2_code", 40850],
-    //    ["==","adm2_code", 149287]]
-    //});
-
-    //map.addLayer({
-    //  "id": "route-click",
-    //  "type": "fill",
-    //  "source": "ethiopia_gadm_2014",
-    //  "source-layer": "data",
-    //  "layout": {},
-    //  "paint": {
-    //    "fill-color": "#627BC1",
-    //    "fill-opacity":.2
-    //  },
-    //  "filter": ["!=", "adm2_code", null]
-    //});
-
-    map.on('click', function (e) {
-      // Use featuresAt to get features within a given radius of the click event
-      // Use layer option to avoid getting results from other layers
-      map.featuresAt(e.point, {layer: 'ethiopia_gadm', radius: 10, includeGeometry: true}, function (err, features) {
-        if (err) throw err;
-        // if there are features within the given radius of the click event,
-        // fly to the location of the click event
-        if (features.length) {
-          // Get coordinates from the symbol and center the map on those coordinates
-          //map.flyTo({center: features[0].geometry.coordinates});
-          //console.log(features[0].properties.adm0_code + " " + features[1].properties.adm1_code);
-
-          map.setFilter("route-click", ["==", "adm2_code", features[1].properties.adm2_code]);
-
-          MapDataService.getDistricts(features[1].properties.adm1_code)
-              .then(function(response){
-                $rootScope.$broadcast('details', response);
-              });
+        if(lastBasemapUrl !== null && lastBasemapUrl !== basemapUrl){
+          drawOverlays();
         }
 
-      });
+        lastBasemapUrl = basemapUrl;
+
+      }
+  )
+
+  map.on('click', function (e) {
+    // Use featuresAt to get features within a given radius of the click event
+    // Use layer option to avoid getting results from other layers
+    map.featuresAt(e.point, {layer: 'ethiopia_gadm', radius: 10, includeGeometry: true}, function (err, features) {
+      if (err) throw err;
+      // if there are features within the given radius of the click event,
+      // fly to the location of the click event
+      if (features.length) {
+        // Get coordinates from the symbol and center the map on those coordinates
+        //map.flyTo({center: features[0].geometry.coordinates});
+        //console.log(features[0].properties.adm0_code + " " + features[1].properties.adm1_code);
+
+        map.setFilter("route-click", ["==", "adm2_code", features[1].properties.adm2_code]);
+
+        MapDataService.getDistricts(features[1].properties.adm1_code)
+            .then(function(response){
+              $rootScope.$broadcast('details', response);
+            });
+      }
+
     });
-
-    console.log(map);
-
   });
 
   var lastLayersStr = '';
   var lastBasemapUrl = null;
+  var basemapUrl;
   var basemapLayer = null;
   var layersStr = null;
   var overlays = [];
@@ -3780,9 +3696,9 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function(
     // first layer should always be treated as the basemap
     var basemap = LayerConfig.find(layers[0]) || LayerConfig.osm.url;
     if (typeof basemap === 'string') {
-      var basemapUrl = basemap;
+      basemapUrl = basemap;
     } else {
-      var basemapUrl = basemap.url;
+      basemapUrl = basemap.url;
     }
     overlayNames = layers.slice(1);
 
@@ -3794,10 +3710,8 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function(
 
       basemapLayer = map.setStyle(basemapUrl);
 
-      //basemapLayer.on('load', function () {
-      //  //Move to back
-      //  basemapLayer.bringToBack();
-      //});
+      //map.fire('newStyle', {"lastBasemapUrl":lastBasemapUrl, "basemapUrl":basemapUrl});
+
     }
 
     if (lastLayersStr !== layersStr) {
@@ -3822,7 +3736,6 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function(
     }
 
     lastLayersStr = layersStr;
-    lastBasemapUrl = basemapUrl;
   }
   //
   //
@@ -3926,7 +3839,7 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function(
       var overlayName = overlayNames[i];
       var currOverlay = overlays[i];
 
-      if (currOverlay && currOverlay.overlayName === overlayName) {
+      if (map.getLayer(LayerConfig[overlayName].id) !== undefined && currOverlay && currOverlay.overlayName === overlayName) {
         continue; // layer is already there, continue on!
       }
 
@@ -3941,7 +3854,7 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function(
 
         var cfg = LayerConfig[overlayName];
 
-        // make sure make is finsihed loading
+        // make sure make is finished loading
 
         // check to see if source exists
         if(map.getSource(cfg.source) == undefined){
