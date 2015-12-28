@@ -9,6 +9,8 @@ module.exports = angular.module('SpatialViewer').controller('MainCtrl', function
   var layersStr = $stateParams.layers = $stateParams.layers.replace('http//', 'http://');
   var themeStr = $stateParams.theme;
 
+  var countryStr = $stateParams.country;
+
   var levelStr = $stateParams.level;
   var zoomStr = $stateParams.zoom;
 
@@ -22,6 +24,11 @@ module.exports = angular.module('SpatialViewer').controller('MainCtrl', function
     window.prevTheme = themeStr;
     var layers = layersStr.split(',');
     $rootScope.$broadcast('layers-update', layers);
+  }
+
+  if (countryStr !== null && countryStr !== window.prevcountryStr) {
+    window.prevcountryStr = countryStr;
+    $rootScope.$broadcast('themes-update', countryStr);
   }
 
   if (levelStr !== null && levelStr !== window.prevLevelStr) {

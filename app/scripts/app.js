@@ -96,13 +96,13 @@ SpatialViewer.run(function ($rootScope, $state, $stateParams) {
 
 SpatialViewer.config(function ($stateProvider, $urlRouterProvider) {
   $urlRouterProvider
-      .when('/default', '/map@0,0,2(satellite,wa)')
-      .when('/phl', '/map@11.759815,121.893311,6(satellite,phl)')
-      .otherwise(localStorage.getItem('defaultRoute') || '/map@0,0,2(satellite)');
+      .when('/default', '/map@0,0,2(satellite,wa),Ethiopia')
+      .when('/phl', '/map@11.759815,121.893311,6(satellite,phl),Ethiopia')
+      .otherwise(localStorage.getItem('defaultRoute') || '/map@0,0,2(satellite),Ethiopia');
 
   $stateProvider
       .state('main', {
-        url: '/map@:lat,:lng,:zoom(*layers)?title&zoom-extent&stories&layers-panel&filters-panel&filters&legend&basemaps&info&theme&details-panel&search-panel&sf_id&level',
+        url: '/map@:lat,:lng,:zoom(*layers),:country?title&zoom-extent&stories&layers-panel&filters-panel&filters&legend&basemaps&info&theme&details-panel&search-panel&sf_id&level',
         views: {
           'details': {
             template: ' ',
@@ -115,7 +115,7 @@ SpatialViewer.config(function ($stateProvider, $urlRouterProvider) {
         }
       })
       .state('upload', {
-        url: '/map@:lat,:lng,:zoom(*layers)/upload?title&zoom-extent&stories&layers-panel&filters-panel&filters&legend&basemaps&info&theme&details-panel&search-panel&sf_id&level',
+        url: '/map@:lat,:lng,:zoom(*layers),:country/upload?title&zoom-extent&stories&layers-panel&filters-panel&filters&legend&basemaps&info&theme&details-panel&search-panel&sf_id&level',
         views: {
           'details': {
             template: ' ',
@@ -128,7 +128,7 @@ SpatialViewer.config(function ($stateProvider, $urlRouterProvider) {
         }
       })
       .state('export', {
-        url: '/map@:lat,:lng,:zoom(*layers)/export?title&zoom-extent&stories&layers-panel&filters-panel&filters&legend&basemaps&info&theme&details-panel&search-panel&sf_id&level',
+        url: '/map@:lat,:lng,:zoom(*layers),:country/export?title&zoom-extent&stories&layers-panel&filters-panel&filters&legend&basemaps&info&theme&details-panel&search-panel&sf_id&level',
         views: {
           'details': {
             template: ' ',
