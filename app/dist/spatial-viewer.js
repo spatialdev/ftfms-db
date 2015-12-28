@@ -3605,57 +3605,6 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function 
     //
     //    })
 
-    function addLayer(level) {
-        if (level == 'gaul1') {
-            if (map.getLayer('ethiopia_gadm2') !== undefined) {
-                map.removeLayer('ethiopia_gadm2')
-            }
-            map.addLayer(gadm1layer);
-        }
-        if (level == 'gaul2') {
-            if (map.getLayer('ethiopia_gadm1') !== undefined) {
-                map.removeLayer('ethiopia_gadm1')
-            }
-            map.addLayer(gadm2layer);
-        }
-    }
-
-    /**
-     * Listen for theme change, and filter map
-     *
-     */
-    $scope.$on('themes-update', function (e, data) {
-        var theme = $stateParams.theme;
-        var layerFilter = ["any"];
-
-        var columnName = $rootScope.columnNameHash[theme].column;
-        var table = $rootScope.columnNameHash[theme].table;
-        var layer = LayerConfig[$rootScope.countryLayers[$stateParams.country]];
-
-        //TODO current filter scheme draws all levels under selected gadm, figure out how to only draw
-
-        MapDataService.getGadmCodes($stateParams.country, columnName, table)
-            .then(function (response) {
-
-                // get gadm codes
-                response.features.forEach(function (f) {
-                    layerFilter.push(["==", columnName, f.properties[columnName]]);
-                })
-
-                // set filter if map loaded, if not, change filter property
-                if (map.loaded()) {
-                    map.setFilter(layer.id, layerFilter);
-                } else {
-                    LayerConfig[$rootScope.countryLayers[$stateParams.country]].filter = layerFilter;
-                }
-
-            })
-            .catch(function (err) {
-                console.error(err);
-            })
-
-    })
-
 
     // check if overLays in url have been drawn on map
     map.once('load', function () {
@@ -3881,7 +3830,74 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function 
     //}
     //
     //
+
+    /**
+     * Listen for theme change
+     *
+     */
+    $scope.$on('themes-update', function (e, data) {
+        var theme = $stateParams.theme;
+        var overLay = LayerConfig[overlayNames];
+
+        // get layer based on theme
+        if(overLay !== undefined) {
+            var layer = getLayer(overLay, theme);
+            
+            if (map.loaded() && overLay.active == true) {
+                // set layer to visible if already a part of map
+                if (map.getLayer(layer.id) !== undefined) {
+                    map.setLayoutProperty(layer.id, "visibility", "visible");
+                } else {
+                    /// add layer
+                    map.addLayer(layer);
+                }
+
+                // hide other gadm layers
+                hideLayers(LayerConfig[overlayNames], theme)
+            }
+        }
+
+    })
+
+    /**
+     *
+     * @param source - Vector Source Layer Object
+     * @param theme - gadm level
+     * @returns {*} - layer object
+     */
+    function getLayer(source,theme) {
+        var layers = source.layers;
+        var layer;
+
+        layers.forEach(function(val, i){
+            if (val["source-layer"] == theme){
+                layer = layers[i];
+            }
+        })
+
+        return layer;
+    }
+
+    /**
+     * Hide all layers except current theme
+     *
+     * @param source - Vector Source Layer Object
+     * @param theme - gadm level
+     *
+     */
+    function hideLayers (source, theme) {
+        var layers = source.layers;
+
+        layers.forEach(function(val, i){
+            if (val["source-layer"] !== theme && map.getLayer(val.id)!== undefined){
+                map.setLayoutProperty(val.id, "visibility", "none");
+            }
+        })
+    }
+
     function drawOverlays() {
+        var theme = $stateParams.theme;
+
         for (var i = 0, len = overlayNames.length; i < len; ++i) {
             var overlayName = overlayNames[i];
             var currOverlay = overlays[i];
@@ -3900,6 +3916,7 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function 
                 && LayerConfig[overlayName]["layer-type"].toLowerCase() === 'vector') {
 
                 var cfg = LayerConfig[overlayName];
+                var layer = getLayer(cfg, theme);
 
                 // make sure make is finished loading
 
@@ -3913,7 +3930,7 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function 
 
                 }
 
-                map.addLayer(cfg);
+                map.addLayer(layer);
 
                 //layer.addTo(map);
 
@@ -4010,7 +4027,8 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function 
         // we need to remove those too.
         for (var len2 = overlays.length; i < len2; ++i) {
             //if (overlays[i].destroyResource) overlays[i].destroyResource();
-            map.removeLayer(overlays[i].id);
+            var layer = getLayer(overlays[i], theme)
+            map.removeLayer(layer.id);
             delete overlays[i];
         }
 
@@ -4225,15 +4243,15 @@ module.exports = angular.module('SpatialViewer').controller('ThemeCtrl', functio
 
   var themeNameHash = $rootScope.themeNameHash = {
     all:'All',
-    gaul0: 'Country',
-    gaul1: 'District',
-    gaul2: 'Site'
+    adm0: 'Country',
+    adm1: 'District',
+    adm2: 'Site'
   };
 
   $rootScope.columnNameHash = {
-    gaul0: {column:'adm0_code', table:'country'},
-    gaul1: {column:'adm1_code', table:'district'},
-    gaul2: {column:'adm2_code', table:'site'}
+    adm0: {column:'adm0_code', table:'country'},
+    adm1: {column:'adm1_code', table:'district'},
+    adm2: {column:'adm2_code', table:'site'}
   };
 
   $scope.setTheme = function(key) {

@@ -7,15 +7,15 @@ module.exports = angular.module('SpatialViewer').controller('ThemeCtrl', functio
 
   var themeNameHash = $rootScope.themeNameHash = {
     all:'All',
-    gaul0: 'Country',
-    gaul1: 'District',
-    gaul2: 'Site'
+    adm0: 'Country',
+    adm1: 'District',
+    adm2: 'Site'
   };
 
   $rootScope.columnNameHash = {
-    gaul0: {column:'adm0_code', table:'country'},
-    gaul1: {column:'adm1_code', table:'district'},
-    gaul2: {column:'adm2_code', table:'site'}
+    adm0: {column:'adm0_code', table:'country'},
+    adm1: {column:'adm1_code', table:'district'},
+    adm2: {column:'adm2_code', table:'site'}
   };
 
   $scope.setTheme = function(key) {

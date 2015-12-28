@@ -18,7 +18,7 @@ var layers = {};
  * list, can still be manually referenced in the url. This is just for the User Interface.
  */
 layers.basemaps = [
-  'basic', 'bright', 'streets', 'light', 'dark'
+    'basic', 'bright', 'streets', 'light', 'dark'
 ];
 
 
@@ -32,30 +32,30 @@ layers.basemaps = [
  */
 
 layers.basic = {
-  url: 'mapbox://styles/mapbox/basic-v8',
-  name: 'Basic',
-  "layer-type": 'basemap'
+    url: 'mapbox://styles/mapbox/basic-v8',
+    name: 'Basic',
+    "layer-type": 'basemap'
 };
 
 layers.bright = {
-  url: 'mapbox://styles/mapbox/bright-v8',
-  name: 'Bright',
-  "layer-type": 'basemap'
+    url: 'mapbox://styles/mapbox/bright-v8',
+    name: 'Bright',
+    "layer-type": 'basemap'
 };
 layers.streets = {
-  url: 'mapbox://styles/mapbox/streets-v8',
-  name: 'Streets',
-  "layer-type": 'basemap'
+    url: 'mapbox://styles/mapbox/streets-v8',
+    name: 'Streets',
+    "layer-type": 'basemap'
 };
 layers.light = {
-  url: 'mapbox://styles/mapbox/light-v8',
-  name: 'Light',
-  "layer-type": 'basemap'
+    url: 'mapbox://styles/mapbox/light-v8',
+    name: 'Light',
+    "layer-type": 'basemap'
 };
 layers.dark = {
-  url: 'mapbox://styles/mapbox/dark-v8',
-  name: 'Dark',
-  "layer-type": 'basemap'
+    url: 'mapbox://styles/mapbox/dark-v8',
+    name: 'Dark',
+    "layer-type": 'basemap'
 };
 
 
@@ -67,20 +67,55 @@ layers.dark = {
 
 
 layers.ethiopia_gaul_2014 = {
-  "id": "ethiopia_gadm2",
-  "source": "ethiopia_gadm_2014",
-  "layer-type":"vector",
-  "url":"http://54.200.155.189:3001/services/vector-tiles/ethiopia_gaul_2014/{z}/{x}/{y}.pbf",
-  "layout": {
-    "visibility": "visible"
-  },
-  "source-layer": "data",
-  "interactive": true,
-  "type": "fill",
-  "paint": {
-      "fill-outline-color": "#000000",
-      "fill-color": "#56FF5E",
-      "fill-opacity": ".5"
-    }
-
+    "id":"ethiopia_adm",
+    "layer-type": "vector",
+    "source":"ethiopia_gaul_2014",
+    "url": "http://54.200.155.189:3001/services/vector-tiles/ethiopia_gadm_2014/{z}/{x}/{y}.pbf",
+    "layers": [
+        {
+            "id":"ethiopia_adm0",
+            "layout": {
+                "visibility": "visible"
+            },
+            "source":"ethiopia_gaul_2014",
+            "source-layer": "adm0",
+            "interactive": true,
+            "type": "fill",
+            "paint": {
+                "fill-outline-color": "#000000",
+                "fill-color": "#56FF5E",
+                "fill-opacity": ".5"
+            }
+        },
+        {
+            "id":"ethiopia_adm1",
+            "layout": {
+                "visibility": "visible"
+            },
+            "source":"ethiopia_gaul_2014",
+            "source-layer": "adm1",
+            "interactive": true,
+            "type": "fill",
+            "paint": {
+                "fill-outline-color": "#000000",
+                "fill-color": "#56FF5E",
+                "fill-opacity": ".5"
+            }
+        },
+        {
+            "id":"ethiopia_adm2",
+            "layout": {
+                "visibility": "visible"
+            },
+            "source":"ethiopia_gaul_2014",
+            "source-layer": "adm2",
+            "interactive": true,
+            "type": "fill",
+            "paint": {
+                "fill-outline-color": "#000000",
+                "fill-color": "#56FF5E",
+                "fill-opacity": ".5"
+            }
+        }
+    ]
 };
