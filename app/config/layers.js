@@ -66,10 +66,10 @@ layers.dark = {
  */
 
 
-layers.ethiopia_gaul_2014 = {
+layers.ethiopia_gadm_2014 = {
     "id":"ethiopia_adm",
     "layer-type": "vector",
-    "source":"ethiopia_gaul_2014",
+    "source":"ethiopia_gadm_2014",
     "url": "http://54.200.155.189:3001/services/vector-tiles/ethiopia_gadm_2014/{z}/{x}/{y}.pbf",
     "layers": [
         {
@@ -77,7 +77,7 @@ layers.ethiopia_gaul_2014 = {
             "layout": {
                 "visibility": "visible"
             },
-            "source":"ethiopia_gaul_2014",
+            "source":"ethiopia_gadm_2014",
             "source-layer": "adm0",
             "interactive": true,
             "type": "fill",
@@ -92,7 +92,7 @@ layers.ethiopia_gaul_2014 = {
             "layout": {
                 "visibility": "visible"
             },
-            "source":"ethiopia_gaul_2014",
+            "source":"ethiopia_gadm_2014",
             "source-layer": "adm1",
             "interactive": true,
             "type": "fill",
@@ -107,7 +107,169 @@ layers.ethiopia_gaul_2014 = {
             "layout": {
                 "visibility": "visible"
             },
-            "source":"ethiopia_gaul_2014",
+            "source":"ethiopia_gadm_2014",
+            "source-layer": "adm2",
+            "interactive": true,
+            "type": "fill",
+            "paint": {
+                "fill-outline-color": "#000000",
+                "fill-color": "#56FF5E",
+                "fill-opacity": ".5"
+            }
+        }
+    ]
+};
+
+layers.kenya_gadm_2014 = {
+    "id":"kenya_gadm",
+    "layer-type": "vector",
+    "source":"kenya_gadm_2014",
+    "url": "http://54.200.155.189:3001/services/vector-tiles/kenya_gadm_2014/{z}/{x}/{y}.pbf",
+    "layers": [
+        {
+            "id":"kenya_adm0",
+            "layout": {
+                "visibility": "visible"
+            },
+            "source":"kenya_gadm_2014",
+            "source-layer": "adm0",
+            "interactive": true,
+            "type": "fill",
+            "paint": {
+                "fill-outline-color": "#000000",
+                "fill-color": "#56FF5E",
+                "fill-opacity": ".5"
+            }
+        },
+        {
+            "id":"kenya_adm1",
+            "layout": {
+                "visibility": "visible"
+            },
+            "source":"kenya_gadm_2014",
+            "source-layer": "adm1",
+            "interactive": true,
+            "type": "fill",
+            "paint": {
+                "fill-outline-color": "#000000",
+                "fill-color": "#56FF5E",
+                "fill-opacity": ".5"
+            }
+        },
+        {
+            "id":"kenya_adm2",
+            "layout": {
+                "visibility": "visible"
+            },
+            "source":"kenya_gadm_2014",
+            "source-layer": "adm2",
+            "interactive": true,
+            "type": "fill",
+            "paint": {
+                "fill-outline-color": "#000000",
+                "fill-color": "#56FF5E",
+                "fill-opacity": ".5"
+            }
+        }
+    ]
+};
+
+layers.senegal_gadm_2014 = {
+    "id":"senegal_gadm",
+    "layer-type": "vector",
+    "source":"senegal_gadm_2014",
+    "url": "http://54.200.155.189:3001/services/vector-tiles/senegal_gadm_2014/{z}/{x}/{y}.pbf",
+    "layers": [
+        {
+            "id":"senegal_adm0",
+            "layout": {
+                "visibility": "visible"
+            },
+            "source":"senegal_gadm_2014",
+            "source-layer": "adm0",
+            "interactive": true,
+            "type": "fill",
+            "paint": {
+                "fill-outline-color": "#000000",
+                "fill-color": "#56FF5E",
+                "fill-opacity": ".5"
+            }
+        },
+        {
+            "id":"senegal_adm1",
+            "layout": {
+                "visibility": "visible"
+            },
+            "source":"senegal_gadm_2014",
+            "source-layer": "adm1",
+            "interactive": true,
+            "type": "fill",
+            "paint": {
+                "fill-outline-color": "#000000",
+                "fill-color": "#56FF5E",
+                "fill-opacity": ".5"
+            }
+        },
+        {
+            "id":"senegal_adm2",
+            "layout": {
+                "visibility": "visible"
+            },
+            "source":"senegal_gadm_2014",
+            "source-layer": "adm2",
+            "interactive": true,
+            "type": "fill",
+            "paint": {
+                "fill-outline-color": "#000000",
+                "fill-color": "#56FF5E",
+                "fill-opacity": ".5"
+            }
+        }
+    ]
+};
+
+layers.bangladesh_gadm_2014 = {
+    "id":"bangladesh_gadm",
+    "layer-type": "vector",
+    "source":"bangladesh_gadm_2014",
+    "url": "http://54.200.155.189:3001/services/vector-tiles/bangladesh_gadm_2014/{z}/{x}/{y}.pbf",
+    "layers": [
+        {
+            "id":"bangladesh_adm0",
+            "layout": {
+                "visibility": "visible"
+            },
+            "source":"bangladesh_gadm_2014",
+            "source-layer": "adm0",
+            "interactive": true,
+            "type": "fill",
+            "paint": {
+                "fill-outline-color": "#000000",
+                "fill-color": "#56FF5E",
+                "fill-opacity": ".5"
+            }
+        },
+        {
+            "id":"bangladesh_adm1",
+            "layout": {
+                "visibility": "visible"
+            },
+            "source":"bangladesh_gadm_2014",
+            "source-layer": "adm1",
+            "interactive": true,
+            "type": "fill",
+            "paint": {
+                "fill-outline-color": "#000000",
+                "fill-color": "#56FF5E",
+                "fill-opacity": ".5"
+            }
+        },
+        {
+            "id":"bangladesh_adm2",
+            "layout": {
+                "visibility": "visible"
+            },
+            "source":"bangladesh_gadm_2014",
             "source-layer": "adm2",
             "interactive": true,
             "type": "fill",

@@ -267,26 +267,54 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function 
      */
     $scope.$on('themes-update', function (e, data) {
         var theme = $stateParams.theme;
-        var overLay = LayerConfig[overlayNames];
+        var batchLayoutProperties = [];
+        var batchaddLayer = [];
+        var batchhideLayer = [];
 
-        // get layer based on theme
-        if(overLay !== undefined) {
-            var layer = getLayer(overLay, theme);
-            
-            if (map.loaded() && overLay.active == true) {
-                // set layer to visible if already a part of map
-                if (map.getLayer(layer.id) !== undefined) {
-                    map.setLayoutProperty(layer.id, "visibility", "visible");
-                } else {
-                    /// add layer
-                    map.addLayer(layer);
+        //var overLay = LayerConfig[overlayNames];
+
+        overlayNames.forEach(function (val) {
+            var overLay = LayerConfig[val];
+            // get layer based on theme
+            if (overLay !== undefined) {
+                var layer = getLayer(overLay, theme);
+
+                if (map.loaded() && overLay.active == true) {
+                    // set layer to visible if already a part of map
+                    if (map.getLayer(layer.id) !== undefined) {
+                        batchLayoutProperties.push(layer.id);
+                    } else {
+                        /// add layer
+                        batchaddLayer.push(layer);
+                    }
+
+                    // hide other gadm layers
+                    //hideLayers(overLay, theme)
                 }
-
-                // hide other gadm layers
-                hideLayers(LayerConfig[overlayNames], theme)
             }
-        }
+        })
 
+        if (batchaddLayer.length > 0 || batchLayoutProperties.length > 0) {
+            map.batch(function (batch) {
+                batchaddLayer.forEach(function (val) {
+                    batch.addLayer(val);
+                })
+                batchLayoutProperties.forEach(function (val) {
+                    batch.setLayoutProperty(val, "visibility", "visible");
+                })
+
+                overlayNames.forEach(function (val) {
+                    LayerConfig[val].layers.forEach(function (v) {
+                        if (v["source-layer"] !== theme && map.getLayer(v.id) !== undefined) {
+                            batch.setLayoutProperty(v.id, "visibility", "none")
+                        }
+                    })
+                })
+
+
+
+            })
+        }
     })
 
     /**
@@ -295,12 +323,12 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function 
      * @param theme - gadm level
      * @returns {*} - layer object
      */
-    function getLayer(source,theme) {
+    function getLayer(source, theme) {
         var layers = source.layers;
         var layer;
 
-        layers.forEach(function(val, i){
-            if (val["source-layer"] == theme){
+        layers.forEach(function (val, i) {
+            if (val["source-layer"] == theme) {
                 layer = layers[i];
             }
         })
@@ -315,14 +343,21 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function 
      * @param theme - gadm level
      *
      */
-    function hideLayers (source, theme) {
-        var layers = source.layers;
+    function hideLayers(overLays, theme) {
 
-        layers.forEach(function(val, i){
-            if (val["source-layer"] !== theme && map.getLayer(val.id)!== undefined){
-                map.setLayoutProperty(val.id, "visibility", "none");
-            }
-        })
+        if(map.loaded()) {
+
+            map.batch(function (batch) {
+
+                overLays.forEach(function (val) {
+                    LayerConfig[val].layers.forEach(function (v) {
+                        if (v["source-layer"] !== theme && map.getLayer(v.id) !== undefined) {
+                            batch.setLayoutProperty(v.id, "visibility", "none")
+                        }
+                    })
+                })
+            })
+        }
     }
 
     function drawOverlays() {
@@ -331,6 +366,9 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function 
         for (var i = 0, len = overlayNames.length; i < len; ++i) {
             var overlayName = overlayNames[i];
             var currOverlay = overlays[i];
+            var cfg = LayerConfig[overlayName];
+            var layer = getLayer(cfg, theme);
+
 
             if (map.getLayer(LayerConfig[overlayName].id) !== undefined && currOverlay && currOverlay.overlayName === overlayName) {
                 continue; // layer is already there, continue on!
@@ -345,8 +383,6 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function 
             if (typeof LayerConfig[overlayName] === 'object'
                 && LayerConfig[overlayName]["layer-type"].toLowerCase() === 'vector') {
 
-                var cfg = LayerConfig[overlayName];
-                var layer = getLayer(cfg, theme);
 
                 // make sure make is finished loading
 
@@ -360,8 +396,9 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function 
 
                 }
 
-                map.addLayer(layer);
-
+                if (map.getLayer(layer.id) == undefined) {
+                    map.addLayer(layer);
+                }
                 //layer.addTo(map);
 
                 //map.on('load', function(e){
@@ -382,22 +419,22 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function 
                 //  map.addLayer (tempcfg);
                 //})
 
-                map.on('click', function (e) {
-                    //Take the click event and pass it to the group layers.
-                    pbfSource.onClick(e, function (evt) {
-                        if (evt && evt.feature) {
-                            console.log(['Clicked PBF Feature', evt.feature.properties]);
-                        }
-                    });
-                });
-
-                map.on('layerremove', function (removed) {
-                    //This is the layer that was removed.
-                    //If it is a TileLayer.PBFSource, then call a method to actually remove the children, too.
-                    if (removed.layer.removeChildLayers) {
-                        removed.layer.removeChildLayers(map);
-                    }
-                });
+                //map.on('click', function (e) {
+                //    //Take the click event and pass it to the group layers.
+                //    pbfSource.onClick(e, function (evt) {
+                //        if (evt && evt.feature) {
+                //            console.log(['Clicked PBF Feature', evt.feature.properties]);
+                //        }
+                //    });
+                //});
+                //
+                //map.on('layerremove', function (removed) {
+                //    //This is the layer that was removed.
+                //    //If it is a TileLayer.PBFSource, then call a method to actually remove the children, too.
+                //    if (removed.layer.removeChildLayers) {
+                //        removed.layer.removeChildLayers(map);
+                //    }
+                //});
 
             }
 
@@ -406,13 +443,13 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function 
             else if (typeof LayerConfig[overlayName] === 'object'
                 && LayerConfig[overlayName].type.toLowerCase() === 'wms') {
 
-                var cfg = LayerConfig[overlayName];
-                var layer = L.tileLayer.wms(cfg.url, {
-                    format: cfg.format || 'image/png',
-                    transparent: cfg.transparent || true,
-                    layers: cfg.layers
-                });
-                layer.addTo(map);
+                //var cfg = LayerConfig[overlayName];
+                //var layer = L.tileLayer.wms(cfg.url, {
+                //    format: cfg.format || 'image/png',
+                //    transparent: cfg.transparent || true,
+                //    layers: cfg.layers
+                //});
+                //layer.addTo(map);
             }
 
             /**
@@ -420,12 +457,12 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function 
              */
             else if (typeof LayerConfig[overlayName] === 'object'
                 && LayerConfig[overlayName].type.toLowerCase() === 'xyz') {
-
-                var cfg = LayerConfig[overlayName];
-                var layer = L.tileLayer(cfg.url, {
-                    opacity: cfg.opacity || 0.5
-                });
-                layer.addTo(map);
+                //
+                //var cfg = LayerConfig[overlayName];
+                //var layer = L.tileLayer(cfg.url, {
+                //    opacity: cfg.opacity || 0.5
+                //});
+                //layer.addTo(map);
             }
 
             /**
@@ -433,19 +470,19 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function 
              */
             else if (typeof LayerConfig[overlayName] === 'object'
                 && LayerConfig[overlayName].type.toLowerCase() === 'tms') {
-                var cfg = LayerConfig[overlayName];
-                var layer = L.tileLayer(cfg.url, {
-                    opacity: cfg.opacity || 0.5,
-                    tms: true
-                });
-                layer.addTo(map);
+                //var cfg = LayerConfig[overlayName];
+                //var layer = L.tileLayer(cfg.url, {
+                //    opacity: cfg.opacity || 0.5,
+                //    tms: true
+                //});
+                //layer.addTo(map);
             }
 
             // if its not wms, its a vector layer
             else {
-                var vecRes = VectorProvider.createResource(overlayName);
-                var layer = vecRes.getLayer();
-                layer.addTo(map);
+                //var vecRes = VectorProvider.createResource(overlayName);
+                //var layer = vecRes.getLayer();
+                //layer.addTo(map);
             }
 
             cfg.overlayName = overlayName;
@@ -453,11 +490,15 @@ module.exports = angular.module('SpatialViewer').controller('MapCtrl', function 
 
         }
 
+        //TODO clean this up so it removes the correct overlay
+
         // there are more overlays left in the list, less layers specified in route
         // we need to remove those too.
         for (var len2 = overlays.length; i < len2; ++i) {
             //if (overlays[i].destroyResource) overlays[i].destroyResource();
-            var layer = getLayer(overlays[i], theme)
+
+            var layer = getLayer(overlays[i], theme);
+
             map.removeLayer(layer.id);
             delete overlays[i];
         }
