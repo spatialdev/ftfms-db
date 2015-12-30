@@ -52,7 +52,7 @@ locations,
 admin0,
 admin1,
 admin2,
-measure) FROM '/Users/admin/Desktop/ftfms/clean_bangladesh_12_22.csv'
+measure) FROM '/Users/admin/Desktop/ftfms/clean_bangladesh_12_18.csv'
 WITH DELIMITER ',' CSV HEADER;
 
 
