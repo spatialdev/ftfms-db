@@ -6,16 +6,21 @@
 module.exports = angular.module('SpatialViewer').controller('ThemeCtrl', function ($scope, $rootScope, $state, $stateParams, VectorProvider) {
 
   var themeNameHash = $rootScope.themeNameHash = {
-    gaul0: 'Country',
-    gaul1: 'District',
-    gaul2: 'Site'
+    all:'All',
+    adm0: 'Country',
+    adm1: 'District',
+    adm2: 'Site'
+  };
+
+  $rootScope.columnNameHash = {
+    adm0: {column:'adm0_code', table:'country'},
+    adm1: {column:'adm1_code', table:'district'},
+    adm2: {column:'adm2_code', table:'site'}
   };
 
   $scope.setTheme = function(key) {
-
-    $rootScope.$broadcast('addLayer', {level: key})
-    //$scope.themeName = themeNameHash[key];
-    //$scope.setThemeQueryParam(key);
+    $scope.themeName = themeNameHash[key];
+    $scope.setThemeQueryParam(key);
 
   };
 
@@ -23,6 +28,7 @@ module.exports = angular.module('SpatialViewer').controller('ThemeCtrl', functio
     $stateParams.theme = theme;
     var state = $state.current.name || 'main';
     $state.go(state, $stateParams);
+    $rootScope.$broadcast('themes-update');
   };
 
   $scope.themeName = themeNameHash[$stateParams.theme] || 'Country';
