@@ -13,13 +13,13 @@ update country
 set geom = gaul_2014_adm0.geom
 from gaul_2014_adm0
 where country.title = gaul_2014_adm0.adm0_name
-and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal');
+and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
 
 update country
 set geom_point = gaul_2014_adm0.geom_point
 from gaul_2014_adm0
 where country.title = gaul_2014_adm0.adm0_name
-and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal');
+and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
 
 -- get adm0 codes from adm1 table
 update country
@@ -38,6 +38,46 @@ update country
 set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Senegal')
 from gaul_2014_adm1
 where country.title = 'Senegal';
+update country
+set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Ghana')
+from gaul_2014_adm1
+where country.title = 'Ghana';
+update country
+set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Tanzania')
+from gaul_2014_adm1
+where country.title = 'Tanzania';
+update country
+set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Liberia')
+from gaul_2014_adm1
+where country.title = 'Liberia';
+update country
+set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Zambia')
+from gaul_2014_adm1
+where country.title = 'Zambia';
+update country
+set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Malawi')
+from gaul_2014_adm1
+where country.title = 'Malawi';
+update country
+set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Nepal')
+from gaul_2014_adm1
+where country.title = 'Nepal';
+update country
+set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Mali')
+from gaul_2014_adm1
+where country.title = 'Mali';
+update country
+set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Mozambique')
+from gaul_2014_adm1
+where country.title = 'Mozambique';
+update country
+set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Rwanda')
+from gaul_2014_adm1
+where country.title = 'Rwanda';
+update country
+set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Uganda')
+from gaul_2014_adm1
+where country.title = 'Uganda';
 
 -- adding extra columns to the district table to include geometry and gaul ids
 ALTER TABLE district
@@ -66,25 +106,25 @@ update district
 set geom = gaul_2014_adm1.geom, adm0_name = gaul_2014_adm1.adm0_name
 from gaul_2014_adm1
 where district.title = gaul_2014_adm1.adm1_name
-and gaul_2014_adm1.adm0_name in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal');
+and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
 
 update district
 set geom_point = gaul_2014_adm1.geom_point
 from gaul_2014_adm1
 where district.title = gaul_2014_adm1.adm1_name
-and adm0_name in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal');
+and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
 
 update district
 set adm1_code = gaul_2014_adm1.adm1_code
 from gaul_2014_adm1
 where district.title = gaul_2014_adm1.adm1_name
-and adm0_name in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal');
+and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
 
 update district
 set adm0_code = gaul_2014_adm1.adm0_code
 from gaul_2014_adm1
 where district.title = gaul_2014_adm1.adm1_name
-and adm0_name in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal');
+and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
 
 
 
@@ -125,31 +165,31 @@ update site
 set geom = gaul_2014_adm2.geom, adm0_name = gaul_2014_adm2.adm0_name, adm1_name = gaul_2014_adm2.adm1_name
 from gaul_2014_adm2
 where site.title = gaul_2014_adm2.adm2_name
-and gaul_2014_adm2.adm0_name in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal');
+and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
 
 update site
 set geom_point = gaul_2014_adm2.geom_point
 from gaul_2014_adm2
 where site.title = gaul_2014_adm2.adm2_name
-and adm0_name in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal');
+and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
 
 update site
 set adm0_code = gaul_2014_adm2.adm0_code
 from gaul_2014_adm2
 where site.title = gaul_2014_adm2.adm2_name
-and adm0_name in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal');
+and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
 
 update site
 set adm1_code = gaul_2014_adm2.adm1_code
 from gaul_2014_adm2
 where site.title = gaul_2014_adm2.adm2_name
-and adm0_name in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal');
+and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
 
 update site
 set adm2_code = gaul_2014_adm2.adm2_code
 from gaul_2014_adm2
 where site.title = gaul_2014_adm2.adm2_name
-and adm0_name in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal');
+and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
 
 
 

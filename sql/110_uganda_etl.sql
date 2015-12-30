@@ -1,11 +1,11 @@
-DROP TABLE IF EXISTS malawi_raw;
-DROP TABLE IF EXISTS malawi_updated;
-DROP TABLE IF EXISTS malawi_geography;
+DROP TABLE IF EXISTS uganda_raw;
+DROP TABLE IF EXISTS uganda_updated;
+DROP TABLE IF EXISTS uganda_geography;
 -- TRUNCATE TABLE report_indicator;
 -- TRUNCATE TABLE report_organization;
 -- TRUNCATE TABLE report_site;
 
-CREATE TABLE malawi_raw
+CREATE TABLE uganda_raw
 (
   implementing_mechanism text,
   indicator text,
@@ -35,7 +35,7 @@ CREATE TABLE malawi_raw
   measure text
 );
 
-COPY malawi_raw (implementing_mechanism, indicator, im_number, baseline_year, baseline_value,
+COPY uganda_raw (implementing_mechanism, indicator, im_number, baseline_year, baseline_value,
 target_2012,
 target_2013,
 target_2014,
@@ -52,27 +52,27 @@ locations,
 admin0,
 admin1,
 admin2,
-measure) FROM '/Users/admin/Desktop/ftfms/clean_malawi_12_18.csv'
+measure) FROM '/Users/admin/Desktop/ftfms/clean_uganda_12_18.csv'
 WITH DELIMITER ',' CSV HEADER;
 
 
--- create malawi_updated
+-- create uganda_updated
 -- admin level 0 data is populated
 -- copy into new table
 SELECT *
-INTO malawi_updated
-FROM malawi_raw;
+INTO uganda_updated
+FROM uganda_raw;
 
--- update malawi_updated
-UPDATE malawi_updated
-SET locations = 'Malawi'
+-- update uganda_updated
+UPDATE uganda_updated
+SET locations = 'Uganda'
 WHERE locations is null;
 
 
 
--- create table malawi_geography
+-- create table uganda_geography
 -- table of unique geographies
-SELECT * INTO malawi_geography
+SELECT * INTO uganda_geography
 FROM (
     Select distinct(a[3]) as admin2, a[1] as admin0, a[2] as admin1
     from (
@@ -80,8 +80,8 @@ FROM (
         from (
             SELECT
             admin0, admin1, admin2,
-            regexp_split_to_table(malawi_updated.locations, E'; ') AS locations -- split into multiple rows
-            FROM malawi_updated
+            regexp_split_to_table(uganda_updated.locations, E'; ') AS locations -- split into multiple rows
+            FROM uganda_updated
         ) as parsed_geographies
     ) as dt(a)
 group by 1,2,3
@@ -91,14 +91,14 @@ order by 3) as geographies;
 -- populate country table
 INSERT INTO country (title)
 	select distinct(admin0)
-	FROM malawi_geography;
+	FROM uganda_geography;
 
 
 -- populate district table
 INSERT INTO district (title, country_id)
 	SELECT distinct(admin1), country_id
-	FROM malawi_geography
-	JOIN country ON ( country.title = malawi_geography.admin0)
+	FROM uganda_geography
+	JOIN country ON ( country.title = uganda_geography.admin0)
 	WHERE admin1 IS NOT NULL
 	GROUP BY country_id, admin1;
 
@@ -106,20 +106,20 @@ INSERT INTO district (title, country_id)
 -- populate site table
 INSERT INTO site (district_id, title)
 	SELECT distinct(district_id), admin2
-	FROM malawi_geography
-	JOIN district ON ( district.title = malawi_geography.admin1)
+	FROM uganda_geography
+	JOIN district ON ( district.title = uganda_geography.admin1)
 	WHERE admin2 IS NOT NULL
 	GROUP BY district_id, admin2;
 
 
 -- geography table is no longer needed
-DROP TABLE malawi_geography;
+DROP TABLE uganda_geography;
 
 
 -- populate organization table
 INSERT INTO organization (title)
 	SELECT distinct(prime_partner)
-	FROM malawi_updated
+	FROM uganda_updated
 	WHERE prime_partner is not null
 	EXCEPT
 		SELECT distinct(title)
@@ -132,7 +132,7 @@ INSERT INTO indicator (code, title)
     SELECT distinct(a[1]) as code, a[2] as title
     FROM (
         select regexp_split_to_array(indicator, ':') -- split into multiple columns
-        from malawi_updated
+        from uganda_updated
     ) as dt(a)
     GROUP BY 1,2
     EXCEPT
@@ -143,7 +143,7 @@ INSERT INTO indicator (code, title)
 
 -- populate report table
 INSERT INTO report (title,interval_id)
-(SELECT DISTINCT implementing_mechanism, 1 FROM malawi_updated);
+(SELECT DISTINCT implementing_mechanism, 1 FROM uganda_updated);
 
 
 
@@ -163,7 +163,7 @@ INSERT INTO report_indicator (indicator_id, report_id)
     FROM (
         select regexp_split_to_array(indicator, ':'), -- split into multiple columns
 	implementing_mechanism
-        from malawi_updated
+        from uganda_updated
     ) as dt(a)
     JOIN indicator ON (indicator.title = a[2])
     JOIN report ON (report.title = implementing_mechanism)
@@ -174,9 +174,9 @@ INSERT INTO report_indicator (indicator_id, report_id)
 -- populate report organization table
 INSERT INTO report_organization (organization_id, report_id)
     SELECT  organization.organization_id, report.report_id
-    from malawi_updated
+    from uganda_updated
 
-    JOIN organization ON (organization.title = malawi_updated.prime_partner)
+    JOIN organization ON (organization.title = uganda_updated.prime_partner)
     JOIN report ON (report.title = implementing_mechanism)
     GROUP BY 1,2
     ORDER BY 1 asc;
@@ -192,9 +192,9 @@ FROM (
 		implementing_mechanism
 	    from (
 		SELECT implementing_mechanism,
-		regexp_split_to_table(malawi_updated.locations, E'; ') AS locations -- split into multiple rows
-		FROM malawi_updated
-	    ) as parse_malawi_updated
+		regexp_split_to_table(uganda_updated.locations, E'; ') AS locations -- split into multiple rows
+		FROM uganda_updated
+	    ) as parse_uganda_updated
 	) as dt(a)
 GROUP BY 1,2,3,4
 ORDER BY 3 ) geo
@@ -214,9 +214,9 @@ SELECT  distinct(report_id), country.country_id, district.district_id, site_id
 			implementing_mechanism
 		    from (
 			SELECT implementing_mechanism,
-			regexp_split_to_table(malawi_updated.locations, E'; ') AS locations -- split into multiple rows
-			FROM malawi_updated
-		    ) as parse_malawi_updated
+			regexp_split_to_table(uganda_updated.locations, E'; ') AS locations -- split into multiple rows
+			FROM uganda_updated
+		    ) as parse_uganda_updated
 		) as dt(a)
 	 ) geo
 	JOIN report ON (report.title = implementing_mechanism)
@@ -232,7 +232,7 @@ INSERT INTO measure (title, indicator_id)
     FROM (
         select regexp_split_to_array(indicator, ':'), -- split into multiple columns
      measure
-        from malawi_updated
+        from uganda_updated
         where measure is not null
     ) as dt(a)
     JOIN indicator ON (indicator.title = a[2])
@@ -258,7 +258,7 @@ INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_i
 SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, target_2010 as data, m.measure_id
 FROM value v, (
 	select measure,implementing_mechanism, target_2010, regexp_split_to_array(indicator, ':')
-	from malawi_updated
+	from uganda_updated
 ) AS dt(measure,implementing_mechanism, target_2010, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2010)
@@ -275,7 +275,7 @@ INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_i
 SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, actual_2010 as data, m.measure_id
 FROM value v, (
 	select measure, implementing_mechanism, actual_2010, regexp_split_to_array(indicator, ':')
-	from malawi_updated
+	from uganda_updated
 ) AS dt(measure, implementing_mechanism, actual_2010, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2010)
@@ -292,7 +292,7 @@ INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_i
 SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, target_2011 as data, m.measure_id
 FROM value v, (
 	select measure, implementing_mechanism, target_2011, regexp_split_to_array(indicator, ':')
-	from malawi_updated
+	from uganda_updated
 ) AS dt(measure, implementing_mechanism, target_2011, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2011)
@@ -310,7 +310,7 @@ INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_i
 SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, actual_2011 as data, m.measure_id
 FROM value v, (
 	select measure, implementing_mechanism, actual_2011, regexp_split_to_array(indicator, ':')
-	from malawi_updated
+	from uganda_updated
 ) AS dt(measure, implementing_mechanism, actual_2011, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2011)
@@ -328,7 +328,7 @@ INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_i
 SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, target_2012 as data, m.measure_id
 FROM value v, (
 	select measure, implementing_mechanism, target_2012, regexp_split_to_array(indicator, ':')
-	from malawi_updated
+	from uganda_updated
 ) AS dt(measure, implementing_mechanism, target_2012, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2012)
@@ -346,7 +346,7 @@ INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_i
 SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, actual_2012 as data, m.measure_id
 FROM value v, (
 	select measure, implementing_mechanism, actual_2012, regexp_split_to_array(indicator, ':')
-	from malawi_updated
+	from uganda_updated
 ) AS dt(measure, implementing_mechanism, actual_2012, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2012)
@@ -364,7 +364,7 @@ INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_i
 SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, target_2013 as data, m.measure_id
 FROM value v, (
 	select measure, implementing_mechanism, target_2013, regexp_split_to_array(indicator, ':')
-	from malawi_updated
+	from uganda_updated
 ) AS dt(measure, implementing_mechanism, target_2013, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2013)
@@ -382,7 +382,7 @@ INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_i
 SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, actual_2013 as data, m.measure_id
 FROM value v, (
 	select measure, implementing_mechanism, actual_2013, regexp_split_to_array(indicator, ':')
-	from malawi_updated
+	from uganda_updated
 ) AS dt(measure, implementing_mechanism, actual_2013, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2013)
@@ -399,7 +399,7 @@ INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_i
 SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, target_2014 as data, m.measure_id
 FROM value v, (
 	select measure, implementing_mechanism, target_2014, regexp_split_to_array(indicator, ':')
-	from malawi_updated
+	from uganda_updated
 ) AS dt(measure, implementing_mechanism, target_2014, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2014)
@@ -416,7 +416,7 @@ INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_i
 SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, actual_2014 as data, m.measure_id
 FROM value v, (
 	select measure, implementing_mechanism, actual_2014, regexp_split_to_array(indicator, ':')
-	from malawi_updated
+	from uganda_updated
 ) AS dt(measure, implementing_mechanism, actual_2014, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2014)
@@ -433,7 +433,7 @@ INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_i
 SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, target_2015 as data, m.measure_id
 FROM value v, (
 	select measure, implementing_mechanism, target_2015, regexp_split_to_array(indicator, ':')
-	from malawi_updated
+	from uganda_updated
 ) AS dt(measure, implementing_mechanism, target_2015, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2015)
@@ -451,7 +451,7 @@ INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_i
 SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, actual_2015 as data, m.measure_id
 FROM value v, (
 	select measure, implementing_mechanism, actual_2015, regexp_split_to_array(indicator, ':')
-	from malawi_updated
+	from uganda_updated
 ) AS dt(measure, implementing_mechanism, actual_2015, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2015)
@@ -469,7 +469,7 @@ INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_i
 SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, target_2016 as data, m.measure_id
 FROM value v, (
 	select measure, implementing_mechanism, target_2016, regexp_split_to_array(indicator, ':')
-	from malawi_updated
+	from uganda_updated
 ) AS dt(measure, implementing_mechanism, target_2016, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2016)
@@ -487,7 +487,7 @@ INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_i
 SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, target_2017 as data, m.measure_id
 FROM value v, (
 	select measure, implementing_mechanism, target_2017, regexp_split_to_array(indicator, ':')
-	from malawi_updated
+	from uganda_updated
 ) AS dt(measure, implementing_mechanism, target_2017, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2017)
@@ -505,7 +505,7 @@ INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_i
 SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, target_2018 as data, m.measure_id
 FROM value v, (
 	select measure, implementing_mechanism, target_2018, regexp_split_to_array(indicator, ':')
-	from malawi_updated
+	from uganda_updated
 ) AS dt(measure, implementing_mechanism, target_2018, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2018)
@@ -521,7 +521,7 @@ INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_i
 SELECT r.report_id, e.edition_id, i.indicator_id, v.value_id, baseline_year as data, m.measure_id
 FROM value v, (
 	select measure, implementing_mechanism, baseline_year, baseline_value, regexp_split_to_array(indicator, ':')
-	from malawi_updated
+	from uganda_updated
 ) AS dt(measure, implementing_mechanism, baseline_year, baseline_value, indicator)
 JOIN report r ON (r.title = dt.implementing_mechanism)
 LEFT JOIN edition e ON (e.report_id = r.report_id AND e.year = dt.baseline_year)
