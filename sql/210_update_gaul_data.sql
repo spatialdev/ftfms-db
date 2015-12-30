@@ -21,6 +21,30 @@ from gaul_2014_adm0
 where country.title = gaul_2014_adm0.adm0_name
 and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
 
+
+
+---- code to make sure ftf data and gaul data line up
+--select * from report_location
+--join country c on (c.country_id = report_location.country_id)
+--join district d on (d.district_id = report_location.district_id)
+--join site s on (s.site_id = report_location.site_id)
+--where c.title = 'Kenya'
+--
+--
+--select *
+--from gaul_2014_adm1
+--where adm0_name = 'Kenya'
+--limit 100
+
+--update district
+--SET title = 'North Eastern'
+--WHERE title = 'North-Eastern'
+--AND country_id = (select country_id from country where title = 'Kenya');
+
+
+
+
+
 -- get adm0 codes from adm1 table
 update country
 set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Ethiopia')
@@ -98,8 +122,43 @@ ADD column adm0_name character varying;
 -- updating the district names to match gaul names
 update district
 SET title = 'SNNPR'
-WHERE title = 'Southern Nations, Nationalities and Peoples';
+WHERE title = 'Southern Nations, Nationalities and Peoples'
+AND country_id = (select country_id from country where title = 'Ethiopia');
 
+update district
+SET title = 'North Eastern'
+WHERE title = 'North-Eastern'
+AND country_id = (select country_id from country where title = 'Kenya');
+
+update district
+SET title = 'Segou'
+WHERE title = 'Ségou'
+AND country_id = (select country_id from country where title = 'Mali');
+
+update district
+SET title = 'West/Iburengerazuba'
+WHERE title = 'Western Province'
+AND country_id = (select country_id from country where title = 'Rwanda');
+
+update district
+SET title = 'East/Iburasirazuba'
+WHERE title = 'Eastern Province'
+AND country_id = (select country_id from country where title = 'Rwanda');
+
+update district
+SET title = 'Kigali City/Umujyi wa Kigali'
+WHERE title = 'Kigali Province'
+AND country_id = (select country_id from country where title = 'Rwanda');
+
+update district
+SET title = 'North/Amajyaruguru'
+WHERE title = 'Northern Province'
+AND country_id = (select country_id from country where title = 'Rwanda');
+
+update district
+SET title = 'South/Amajyepfo'
+WHERE title = 'Southern Province'
+AND country_id = (select country_id from country where title = 'Rwanda');
 
 -- updating the district table with new gaul data
 update district
