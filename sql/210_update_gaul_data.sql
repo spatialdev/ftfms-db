@@ -9,6 +9,16 @@ ALTER TABLE country
 ADD column adm0_code integer;
 
 -- updating the country table with new gaul data
+--NOTE EACH COUNTRY SHOULD BE RUN INDIVIDUALLY TO AVOID SUPER LONG QUERIES
+
+update country
+set adm0_code = countries.adm0_code
+from(
+	select distinct(adm0_code), adm0_name
+	from gaul_2014_adm1
+	group by 1,2) countries
+where country.title = countries.adm0_name;
+
 update country
 set geom = gaul_2014_adm0.geom
 from gaul_2014_adm0
@@ -41,67 +51,6 @@ and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Ta
 --WHERE title = 'North-Eastern'
 --AND country_id = (select country_id from country where title = 'Kenya');
 
-
-
-
-
--- get adm0 codes from adm1 table
-update country
-set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Ethiopia')
-from gaul_2014_adm1
-where country.title = 'Ethiopia';
-update country
-set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Bangladesh')
-from gaul_2014_adm1
-where country.title = 'Bangladesh';
-update country
-set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Kenya')
-from gaul_2014_adm1
-where country.title = 'Kenya';
-update country
-set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Senegal')
-from gaul_2014_adm1
-where country.title = 'Senegal';
-update country
-set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Ghana')
-from gaul_2014_adm1
-where country.title = 'Ghana';
-update country
-set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Tanzania')
-from gaul_2014_adm1
-where country.title = 'Tanzania';
-update country
-set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Liberia')
-from gaul_2014_adm1
-where country.title = 'Liberia';
-update country
-set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Zambia')
-from gaul_2014_adm1
-where country.title = 'Zambia';
-update country
-set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Malawi')
-from gaul_2014_adm1
-where country.title = 'Malawi';
-update country
-set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Nepal')
-from gaul_2014_adm1
-where country.title = 'Nepal';
-update country
-set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Mali')
-from gaul_2014_adm1
-where country.title = 'Mali';
-update country
-set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Mozambique')
-from gaul_2014_adm1
-where country.title = 'Mozambique';
-update country
-set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Rwanda')
-from gaul_2014_adm1
-where country.title = 'Rwanda';
-update country
-set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Uganda')
-from gaul_2014_adm1
-where country.title = 'Uganda';
 
 -- adding extra columns to the district table to include geometry and gaul ids
 ALTER TABLE district
@@ -162,29 +111,35 @@ AND country_id = (select country_id from country where title = 'Rwanda');
 
 -- updating the district table with new gaul data
 update district
-set geom = gaul_2014_adm1.geom, adm0_name = gaul_2014_adm1.adm0_name
-from gaul_2014_adm1
-where district.title = gaul_2014_adm1.adm1_name
-and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
+set adm0_code = country.adm0_code
+from country
+where district.country_id = country.country_id;
 
 update district
-set geom_point = gaul_2014_adm1.geom_point
-from gaul_2014_adm1
-where district.title = gaul_2014_adm1.adm1_name
-and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
+set adm0_name = country.title
+from country
+where district.country_id = country.country_id;
 
 update district
-set adm1_code = gaul_2014_adm1.adm1_code
-from gaul_2014_adm1
-where district.title = gaul_2014_adm1.adm1_name
-and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
+set adm1_code = gaul_1.adm1_code
+from gaul_2014_adm1 AS gaul_1
+where district.adm0_code = gaul_1.adm0_code
+and district.title = gaul_1.adm1_name
+and gaul_1.adm0_name in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
 
 update district
-set adm0_code = gaul_2014_adm1.adm0_code
-from gaul_2014_adm1
-where district.title = gaul_2014_adm1.adm1_name
-and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
+set geom = gaul_1.geom
+from gaul_2014_adm1 AS gaul_1
+where district.adm0_code = gaul_1.adm0_code
+and district.title = gaul_1.adm1_name
+and gaul_1.adm0_name in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
 
+update district
+set geom_point = gaul_1.geom_point
+from gaul_2014_adm1 AS gaul_1
+where district.adm0_code = gaul_1.adm0_code
+and district.title = gaul_1.adm1_name
+and gaul_1.adm0_name in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
 
 
 -- adding extra columns to the site table to include geometry and gaul ids
@@ -221,35 +176,49 @@ WHERE title = 'Southern Tigray';
 
 -- updating the site table with new gaul data
 update site
-set geom = gaul_2014_adm2.geom, adm0_name = gaul_2014_adm2.adm0_name, adm1_name = gaul_2014_adm2.adm1_name
-from gaul_2014_adm2
-where site.title = gaul_2014_adm2.adm2_name
-and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
+set adm0_code = district.adm0_code
+from district
+where district.district_id = site.district_id;
 
 update site
-set geom_point = gaul_2014_adm2.geom_point
-from gaul_2014_adm2
-where site.title = gaul_2014_adm2.adm2_name
-and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
+set adm0_name = district.adm0_name
+from district
+where district.district_id = site.district_id;
 
 update site
-set adm0_code = gaul_2014_adm2.adm0_code
-from gaul_2014_adm2
-where site.title = gaul_2014_adm2.adm2_name
-and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
+set adm1_code = district.adm1_code
+from district
+where district.district_id = site.district_id;
 
 update site
-set adm1_code = gaul_2014_adm2.adm1_code
-from gaul_2014_adm2
-where site.title = gaul_2014_adm2.adm2_name
-and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
+set adm1_name = district.title
+from district
+where district.district_id = site.district_id;
 
 update site
-set adm2_code = gaul_2014_adm2.adm2_code
-from gaul_2014_adm2
-where site.title = gaul_2014_adm2.adm2_name
-and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
+set adm2_code = gaul_2.adm2_code
+from gaul_2014_adm2 AS gaul_2
+where gaul_2.adm0_code = site.adm0_code
+and gaul_2.adm1_code = site.adm1_code
+and site.title = gaul_2.adm2_name
+and gaul_2.adm0_name  in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
 
+update site
+set geom = gaul_2.geom
+from gaul_2014_adm2 AS gaul_2
+where gaul_2.adm0_code = site.adm0_code
+and gaul_2.adm1_code = site.adm1_code
+and site.title = gaul_2.adm2_name
+and gaul_2.adm0_name  in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
+
+
+update site
+set geom_point = gaul_2.adm2_code
+from gaul_2014_adm2 AS gaul_2
+where gaul_2.adm0_code = site.adm0_code
+and gaul_2.adm1_code = site.adm1_code
+and site.title = gaul_2.adm2_name
+and gaul_2.adm0_name  in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda');
 
 
 -- create view with all district and country data
@@ -315,7 +284,7 @@ GROUP BY c.country_id, d.district_id, c.title, d.title, c.adm0_code, d.adm1_code
 -- create view to get summary data by site
 -- summary includes number of projects and organizations in a given site
 CREATE VIEW summary_data_by_site AS
-SELECT count(distinct ro.report_id) report_count, count(distinct o.organization_id) organization_count, c.country_id, d.district_id, s.site_id, c.title country_title, d.title district_title, s.title site_title
+SELECT count(distinct ro.report_id) report_count, count(distinct o.organization_id) organization_count, c.country_id, d.district_id, s.site_id, c.title country_title, d.title district_title, s.title site_title, c.adm0_code, d.adm1_code, s.adm2_code
 FROM organization o
 JOIN report_organization ro ON ( ro.organization_id = o.organization_id)
 JOIN report_location rl ON (rl.report_id = ro.report_id)
