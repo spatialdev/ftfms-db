@@ -1,3 +1,4 @@
+/**The raw table was altered prior to importing to postgres, in the location column, all '->' where changed to '-> ->' because the admin1 match admin2 GAUL data**/
 DROP TABLE IF EXISTS malawi_raw;
 DROP TABLE IF EXISTS malawi_updated;
 DROP TABLE IF EXISTS malawi_geography;
@@ -52,7 +53,7 @@ locations,
 admin0,
 admin1,
 admin2,
-measure) FROM '/Users/admin/Desktop/ftfms/clean_malawi_12_18.csv'
+measure) FROM '/Users/annanakae/Documents/SpatialDev/ciat/clean_malawi_01_04.csv'
 WITH DELIMITER ',' CSV HEADER;
 
 
@@ -87,6 +88,18 @@ FROM (
 group by 1,2,3
 order by 3) as geographies;
 
+--create intermediate table to populate adm1 values
+Drop table malawi_temp;
+CREATE TABLE malawi_temp AS
+SELECT malawi_geography.admin2, gaul_2014_adm2.adm2_name, gaul_2014_adm2.adm1_name
+FROM malawi_geography, gaul_2014_adm2
+WHERE malawi_geography.admin2= gaul_2014_adm2.adm2_name
+
+--upadte geography table with admin1 values
+UPDATE malawi_geography a
+SET admin1 = b.admin1
+FROM malawi_temp b
+WHERE a.admin2= b.admin2
 
 -- populate country table
 INSERT INTO country (title)
@@ -112,8 +125,9 @@ INSERT INTO site (district_id, title)
 	GROUP BY district_id, admin2;
 
 
--- geography table is no longer needed
+-- geography table & temp table are no longer needed
 DROP TABLE malawi_geography;
+DROP TABLE malawi_temp;
 
 
 -- populate organization table
