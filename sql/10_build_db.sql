@@ -42,21 +42,21 @@ create table codelist(
 );
 
 
---
---create table megasite(
---    megasite_id serial primary key not null,
---    code character varying,
---    title character varying not null,
---    first_name character varying,
---    last_name character varying,
---    email character varying
---);
+
+create table megasite(
+    megasite_id serial primary key not null,
+    code character varying,
+    title character varying not null,
+    first_name character varying,
+    last_name character varying,
+    email character varying
+);
 
 
 
 create table country(
     country_id serial primary key not null,
---    megasite_id int references megasite(megasite_id) not null,
+    megasite_id int references megasite(megasite_id) not null default 1,
     code character varying,
     title character varying not null,
     description character varying,
@@ -77,7 +77,7 @@ create table indicator(
     indicator_id serial primary key not null,
     title character varying not null,
     code character varying,
---    type character varying not null,
+    type character varying,
     unit character varying
 );
 
@@ -103,7 +103,7 @@ create table interval_range(
 create table measure(
     measure_id serial primary key not null,
     indicator_id int not null references indicator(indicator_id),
-    category_id int references category(category_id),
+    category_id int references category(category_id) not null default 1,
     title character varying not null,
     code character varying
 );
@@ -177,7 +177,7 @@ create table site(
     site_id serial primary key not null,
     village_id character varying,
     title character varying not null,
---    type character varying not null check (type='Action Site (Planned)' OR type='Control Site' OR type='Action Site'),
+    type character varying,
     image_path character varying,
 --    point geometry not null,
     district_id int references district(district_id)
@@ -221,11 +221,12 @@ create table data(
     report_id int not null references report(report_id),
     edition_id int references edition(edition_id),
     indicator_id int not null references indicator(indicator_id),
-    measure_id int references measure(measure_id),
+    measure_id int references measure(measure_id) not null,
     value_id int not null references value(value_id),
     data character varying,
     exceeds_margin bit not null default cast(0 as bit(1))
 );
+
 
 CREATE EXTENSION postgres_fdw;
 
@@ -278,9 +279,17 @@ CREATE FOREIGN TABLE gaul_2014_adm2
   population integer
 ) SERVER fsp;
 
--- SELECT adm2_name, adm1_name, adm0_name, geom FROM gaul_2014_adm2 where adm0_name = 'Ethiopia' order by adm2_name;
--- SELECT adm1_name, adm0_name, geom FROM gaul_2014_adm1 where adm0_name = 'Ethiopia' order by adm1_name;
--- SELECT adm0_name, geom FROM gaul_2014_adm0 where adm0_name = 'Ethiopia' order by adm0_name;
+
+-- add null category to the category table
+INSERT INTO category (category_id, title) VALUES (1, 'null');
+
+
+-- add null megasite to megasite table
+INSERT INTO megasite (megasite_id, title) VALUES (1, 'null');
+
+-- add null codelist to codelist table
+INSERT INTO codelist (list, code) VALUES ('null', 'null');
+
 
 -- populate interval table
 -- interval at which data is reported
