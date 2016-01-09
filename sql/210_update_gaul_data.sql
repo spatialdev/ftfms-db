@@ -8,52 +8,74 @@ ADD column geom_point geometry;
 ALTER TABLE country
 ADD column adm0_code integer;
 
+-- update country table so ftfms matches gaul
+update country
+set title = 'United Republic of Tanzania'
+where country.title = 'Tanzania'
+
 -- updating the country table with new gaul data
-update country
-set geom = gaul_2014_adm0.geom
-from gaul_2014_adm0
-where country.title = gaul_2014_adm0.adm0_name
-and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda', 'Zimbabwe');
-
-update country
-set geom_point = gaul_2014_adm0.geom_point
-from gaul_2014_adm0
-where country.title = gaul_2014_adm0.adm0_name
-and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda', 'Zimbabwe');
-
---update Tanzania
-update country
-set geom = gaul_2014_adm0.geom
-from gaul_2014_adm0
-where gaul_2014_adm0.adm0_name = 'United Republic of Tanzania'
-and country.title = 'Tanzania'
-
-update country
-set geom_point = gaul_2014_adm0.geom_point
-from gaul_2014_adm0
-where gaul_2014_adm0.adm0_name = 'United Republic of Tanzania'
-and country.title = 'Tanzania'
-
-
----- code to make sure ftf data and gaul data line up
---select * from report_location
---join country c on (c.country_id = report_location.country_id)
---join district d on (d.district_id = report_location.district_id)
---join site s on (s.site_id = report_location.site_id)
---where c.title = 'Kenya'
---
---
---select *
---from gaul_2014_adm1
---where adm0_name = 'Kenya'
---limit 100
-
---update district
---SET title = 'North Eastern'
---WHERE title = 'North-Eastern'
---AND country_id = (select country_id from country where title = 'Kenya');
+update country set geom = gaul_2014_adm0.geom from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Ethiopia';
+update country set geom = gaul_2014_adm0.geom from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Bangladesh';
+update country set geom = gaul_2014_adm0.geom from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Kenya';
+update country set geom = gaul_2014_adm0.geom from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Senegal';
+update country set geom = gaul_2014_adm0.geom from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Ghana';
+update country set geom = gaul_2014_adm0.geom from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Liberia';
+update country set geom = gaul_2014_adm0.geom from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Zambia';
+update country set geom = gaul_2014_adm0.geom from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Malawi';
+update country set geom = gaul_2014_adm0.geom from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Nepal';
+update country set geom = gaul_2014_adm0.geom from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Mali';
+update country set geom = gaul_2014_adm0.geom from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Mozambique';
+update country set geom = gaul_2014_adm0.geom from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Rwanda';
+update country set geom = gaul_2014_adm0.geom from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Uganda';
+update country set geom = gaul_2014_adm0.geom from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Zimbabwe';
+update country set geom = gaul_2014_adm0.geom from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'United Republic of Tanzania';
 
 
+update country set geom_point = gaul_2014_adm0.geom_point from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Ethiopia';
+update country set geom_point = gaul_2014_adm0.geom_point from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Bangladesh';
+update country set geom_point = gaul_2014_adm0.geom_point from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Kenya';
+update country set geom_point = gaul_2014_adm0.geom_point from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Senegal';
+update country set geom_point = gaul_2014_adm0.geom_point from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Ghana';
+update country set geom_point = gaul_2014_adm0.geom_point from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Liberia';
+update country set geom_point = gaul_2014_adm0.geom_point from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Zambia';
+update country set geom_point = gaul_2014_adm0.geom_point from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Malawi';
+update country set geom_point = gaul_2014_adm0.geom_point from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Nepal';
+update country set geom_point = gaul_2014_adm0.geom_point from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Mali';
+update country set geom_point = gaul_2014_adm0.geom_point from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Mozambique';
+update country set geom_point = gaul_2014_adm0.geom_point from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Rwanda';
+update country set geom_point = gaul_2014_adm0.geom_point from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Uganda';
+update country set geom_point = gaul_2014_adm0.geom_point from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'Zimbabwe';
+update country set geom_point = gaul_2014_adm0.geom_point from gaul_2014_adm0 where country.title = gaul_2014_adm0.adm0_name
+and country.title = 'United Republic of Tanzania';
 
 
 
@@ -81,7 +103,7 @@ where country.title = 'Ghana';
 update country
 set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'United Republic of Tanzania')
 from gaul_2014_adm1
-where country.title = 'Tanzania';
+where country.title = 'United Republic of Tanzania';
 update country
 set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Liberia')
 from gaul_2014_adm1
@@ -118,6 +140,7 @@ update country
 set adm0_code = (Select distinct adm0_code FROM gaul_2014_adm1 where adm0_name = 'Zimbabwe')
 from gaul_2014_adm1
 where country.title = 'Zimbabwe';
+
 
 -- adding extra columns to the district table to include geometry and gaul ids
 ALTER TABLE district
@@ -189,42 +212,216 @@ AND country_id in (select country_id from country where title = 'Senegal');
 update district
 SET title = 'Dar es salaam'
 WHERE title = 'Dar-Es-Salaam'
-AND country_id in (select country_id from country where title = 'Tanzania');
+AND country_id in (select country_id from country where title = 'United Republic of Tanzania');
 
 update district
 SET title = 'Kusini Unguja'
 WHERE title = 'Zanzibar South and Central'
-AND country_id in (select country_id from country where title = 'Tanzania');
+AND country_id in (select country_id from country where title = 'United Republic of Tanzania');
 
 update district
 SET title = 'Mjini Magharibi'
 WHERE title = 'Zanzibar West'
-AND country_id in (select country_id from country where title = 'Tanzania');
+AND country_id in (select country_id from country where title = 'United Republic of Tanzania');
+
 
 -- updating the district table with new gaul data
-update district
-set geom = gaul_2014_adm1.geom, adm0_name = gaul_2014_adm1.adm0_name
-from gaul_2014_adm1
-where district.title = gaul_2014_adm1.adm1_name
-and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda', 'Zimbabwe');
+update district set geom = gaul_2014_adm1.geom, adm0_name = gaul_2014_adm1.adm0_name
+from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+and country.title = 'Ethiopia';
+update district set geom = gaul_2014_adm1.geom, adm0_name = gaul_2014_adm1.adm0_name
+from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+and country.title = 'Bangladesh';
+update district set geom = gaul_2014_adm1.geom, adm0_name = gaul_2014_adm1.adm0_name
+from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+and country.title = 'Kenya';
+update district set geom = gaul_2014_adm1.geom, adm0_name = gaul_2014_adm1.adm0_name
+from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+and country.title = 'Senegal';
+update district set geom = gaul_2014_adm1.geom, adm0_name = gaul_2014_adm1.adm0_name
+from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+and country.title = 'Ghana';
+update district set geom = gaul_2014_adm1.geom, adm0_name = gaul_2014_adm1.adm0_name
+from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+and country.title = 'United Republic of Tanzania';
+update district set geom = gaul_2014_adm1.geom, adm0_name = gaul_2014_adm1.adm0_name
+from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+and country.title = 'Liberia';
+update district set geom = gaul_2014_adm1.geom, adm0_name = gaul_2014_adm1.adm0_name
+from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+and country.title = 'Zambia';
+update district set geom = gaul_2014_adm1.geom, adm0_name = gaul_2014_adm1.adm0_name
+from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+and country.title = 'Malawi';
+update district set geom = gaul_2014_adm1.geom, adm0_name = gaul_2014_adm1.adm0_name
+from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+and country.title = 'Nepal';
+update district set geom = gaul_2014_adm1.geom, adm0_name = gaul_2014_adm1.adm0_name
+from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+and country.title = 'Mali';
+update district set geom = gaul_2014_adm1.geom, adm0_name = gaul_2014_adm1.adm0_name
+from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+and country.title = 'Mozambique';
+update district set geom = gaul_2014_adm1.geom, adm0_name = gaul_2014_adm1.adm0_name
+from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+and country.title = 'Rwanda';
+update district set geom = gaul_2014_adm1.geom, adm0_name = gaul_2014_adm1.adm0_name
+from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+and country.title = 'Uganda';
+update district set geom = gaul_2014_adm1.geom, adm0_name = gaul_2014_adm1.adm0_name
+from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+and country.title = 'Zimbabwe';
+
 
 update district
-set geom_point = gaul_2014_adm1.geom_point
-from gaul_2014_adm1
-where district.title = gaul_2014_adm1.adm1_name
-and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda', 'Zimbabwe');
+set geom_point = gaul_2014_adm1.geom_point from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Ethiopia';
+update district
+set geom_point = gaul_2014_adm1.geom_point from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Bangladesh';
+update district
+set geom_point = gaul_2014_adm1.geom_point from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Kenya';
+update district
+set geom_point = gaul_2014_adm1.geom_point from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Senegal';
+update district
+set geom_point = gaul_2014_adm1.geom_point from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Ghana';
+update district
+set geom_point = gaul_2014_adm1.geom_point from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'United Republic of Tanzania';
+update district
+set geom_point = gaul_2014_adm1.geom_point from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Liberia';
+update district
+set geom_point = gaul_2014_adm1.geom_point from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Zambia';
+update district
+set geom_point = gaul_2014_adm1.geom_point from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Malawi';
+update district
+set geom_point = gaul_2014_adm1.geom_point from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Nepal';
+update district
+set geom_point = gaul_2014_adm1.geom_point from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Mali';
+update district
+set geom_point = gaul_2014_adm1.geom_point from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Mozambique';
+update district
+set geom_point = gaul_2014_adm1.geom_point from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Rwanda';
+update district
+set geom_point = gaul_2014_adm1.geom_point from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Uganda';
+update district
+set geom_point = gaul_2014_adm1.geom_point from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Zimbabwe';
+
 
 update district
-set adm1_code = gaul_2014_adm1.adm1_code
-from gaul_2014_adm1
-where district.title = gaul_2014_adm1.adm1_name
-and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda', 'Zimbabwe');
+set adm1_code = gaul_2014_adm1.adm1_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Ethiopia';
+update district
+set adm1_code = gaul_2014_adm1.adm1_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Bangladesh';
+update district
+set adm1_code = gaul_2014_adm1.adm1_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Kenya';
+update district
+set adm1_code = gaul_2014_adm1.adm1_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Senegal';
+update district
+set adm1_code = gaul_2014_adm1.adm1_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Ghana';
+update district
+set adm1_code = gaul_2014_adm1.adm1_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'United Republic of Tanzania';
+update district
+set adm1_code = gaul_2014_adm1.adm1_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Liberia';
+update district
+set adm1_code = gaul_2014_adm1.adm1_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Zambia';
+update district
+set adm1_code = gaul_2014_adm1.adm1_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Malawi';
+update district
+set adm1_code = gaul_2014_adm1.adm1_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Nepal';
+update district
+set adm1_code = gaul_2014_adm1.adm1_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Mali';
+update district
+set adm1_code = gaul_2014_adm1.adm1_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Mozambique';
+update district
+set adm1_code = gaul_2014_adm1.adm1_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Rwanda';
+update district
+set adm1_code = gaul_2014_adm1.adm1_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Uganda';
+update district
+set adm1_code = gaul_2014_adm1.adm1_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+where country.title = 'Zimbabwe';
 
 update district
-set adm0_code = gaul_2014_adm1.adm0_code
-from gaul_2014_adm1
-where district.title = gaul_2014_adm1.adm1_name
-and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda', 'Zimbabwe');
+set adm0_code = district.adm0_code
+from country
+where district.country_id = country.country_id;
+
+update district
+set adm0_name = district.adm0_name
+from country
+where district.country_id = country.country_id;
+
+--
+--update district
+--set adm0_code = gaul_2014_adm1.adm0_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+--where country.title = 'Ethiopia';
+--update district
+--set adm0_code = gaul_2014_adm1.adm0_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+--where country.title = 'Bangladesh';
+--update district
+--set adm0_code = gaul_2014_adm1.adm0_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+--where country.title = 'Kenya';
+--update district
+--set adm0_code = gaul_2014_adm1.adm0_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+--where country.title = 'Senegal';
+--update district
+--set adm0_code = gaul_2014_adm1.adm0_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+--where country.title = 'Ghana';
+--update district
+--set adm0_code = gaul_2014_adm1.adm0_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+--where country.title = 'United Republic of Tanzania';
+--update district
+--set adm0_code = gaul_2014_adm1.adm0_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+--where country.title = 'Liberia';
+--update district
+--set adm0_code = gaul_2014_adm1.adm0_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+--where country.title = 'Zambia';
+--update district
+--set adm0_code = gaul_2014_adm1.adm0_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+--where country.title = 'Malawi';
+--update district
+--set adm0_code = gaul_2014_adm1.adm0_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+--where country.title = 'Nepal';
+--update district
+--set adm0_code = gaul_2014_adm1.adm0_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+--where country.title = 'Mali';
+--update district
+--set adm0_code = gaul_2014_adm1.adm0_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+--where country.title = 'Mozambique';
+--update district
+--set adm0_code = gaul_2014_adm1.adm0_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+--where country.title = 'Rwanda';
+--update district
+--set adm0_code = gaul_2014_adm1.adm0_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+--where country.title = 'Uganda';
+--update district
+--set adm0_code = gaul_2014_adm1.adm0_code from gaul_2014_adm1 where district.title = gaul_2014_adm1.adm1_name
+--where country.title = 'Zimbabwe';
 
 
 
@@ -516,71 +713,164 @@ SET title = 'West Gonja'
 where title = 'Central Gonja';
 
 -- updating the site table with new gaul data
-update site
-set geom = gaul_2014_adm2.geom, adm0_name = gaul_2014_adm2.adm0_name, adm1_name = gaul_2014_adm2.adm1_name
-from gaul_2014_adm2
-where site.title = gaul_2014_adm2.adm2_name
-and country.title in 
-('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda', 'Zimbabwe');
+update site set geom = gaul_2014_adm2.geom, adm0_name = gaul_2014_adm2.adm0_name, adm1_name = gaul_2014_adm2.adm1_name
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Ethiopia';
+update site set geom = gaul_2014_adm2.geom, adm0_name = gaul_2014_adm2.adm0_name, adm1_name = gaul_2014_adm2.adm1_name
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Bangladesh';
+update site set geom = gaul_2014_adm2.geom, adm0_name = gaul_2014_adm2.adm0_name, adm1_name = gaul_2014_adm2.adm1_name
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Kenya';
+update site set geom = gaul_2014_adm2.geom, adm0_name = gaul_2014_adm2.adm0_name, adm1_name = gaul_2014_adm2.adm1_name
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Senegal';
+update site set geom = gaul_2014_adm2.geom, adm0_name = gaul_2014_adm2.adm0_name, adm1_name = gaul_2014_adm2.adm1_name
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Ghana';
+update site set geom = gaul_2014_adm2.geom, adm0_name = gaul_2014_adm2.adm0_name, adm1_name = gaul_2014_adm2.adm1_name
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'United Republic of Tanzania';
+update site set geom = gaul_2014_adm2.geom, adm0_name = gaul_2014_adm2.adm0_name, adm1_name = gaul_2014_adm2.adm1_name
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Liberia';
+update site set geom = gaul_2014_adm2.geom, adm0_name = gaul_2014_adm2.adm0_name, adm1_name = gaul_2014_adm2.adm1_name
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Zambia';
+update site set geom = gaul_2014_adm2.geom, adm0_name = gaul_2014_adm2.adm0_name, adm1_name = gaul_2014_adm2.adm1_name
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Malawi';
+update site set geom = gaul_2014_adm2.geom, adm0_name = gaul_2014_adm2.adm0_name, adm1_name = gaul_2014_adm2.adm1_name
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Nepal';
+update site set geom = gaul_2014_adm2.geom, adm0_name = gaul_2014_adm2.adm0_name, adm1_name = gaul_2014_adm2.adm1_name
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Mali';
+update site set geom = gaul_2014_adm2.geom, adm0_name = gaul_2014_adm2.adm0_name, adm1_name = gaul_2014_adm2.adm1_name
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Mozambique';
+update site set geom = gaul_2014_adm2.geom, adm0_name = gaul_2014_adm2.adm0_name, adm1_name = gaul_2014_adm2.adm1_name
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Rwanda';
+update site set geom = gaul_2014_adm2.geom, adm0_name = gaul_2014_adm2.adm0_name, adm1_name = gaul_2014_adm2.adm1_name
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Uganda';
+update site set geom = gaul_2014_adm2.geom, adm0_name = gaul_2014_adm2.adm0_name, adm1_name = gaul_2014_adm2.adm1_name
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Zimbabwe';
+
+update site set geom_point = gaul_2014_adm2.geom_point
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Ethiopia';
+update site set geom_point = gaul_2014_adm2.geom_point
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Bangladesh';
+update site set geom_point = gaul_2014_adm2.geom_point
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Kenya';
+update site set geom_point = gaul_2014_adm2.geom_point
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Senegal';
+update site set geom_point = gaul_2014_adm2.geom_point
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Ghana';
+update site set geom_point = gaul_2014_adm2.geom_point
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'United Republic of Tanzania';
+update site set geom_point = gaul_2014_adm2.geom_point
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Liberia';
+update site set geom_point = gaul_2014_adm2.geom_point
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Zambia';
+update site set geom_point = gaul_2014_adm2.geom_point
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Malawi';
+update site set geom_point = gaul_2014_adm2.geom_point
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Nepal';
+update site set geom_point = gaul_2014_adm2.geom_point
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Mali';
+update site set geom_point = gaul_2014_adm2.geom_point
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Mozambique';
+update site set geom_point = gaul_2014_adm2.geom_point
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Rwanda';
+update site set geom_point = gaul_2014_adm2.geom_point
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Uganda';
+update site set geom_point = gaul_2014_adm2.geom_point
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Zimbabwe';
 
 update site
-set geom_point = gaul_2014_adm2.geom_point
-from gaul_2014_adm2
-where site.title = gaul_2014_adm2.adm2_name
-and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda', 'Zimbabwe');
+set adm0_code = district.adm0_code
+from district
+where district.district_id = site.district_id;
 
 update site
-set adm0_code = gaul_2014_adm2.adm0_code
-from gaul_2014_adm2
-where site.title = gaul_2014_adm2.adm2_name
-and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda', 'Zimbabwe');
+set adm0_name = district.adm0_name
+from district
+where district.district_id = site.district_id;
 
 update site
-set adm1_code = gaul_2014_adm2.adm1_code
-from gaul_2014_adm2
-where site.title = gaul_2014_adm2.adm2_name
-and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda', 'Zimbabwe');
+set adm1_code = district.adm1_code
+from district
+where district.district_id = site.district_id;
 
 update site
-set adm2_code = gaul_2014_adm2.adm2_code
-from gaul_2014_adm2
-where site.title = gaul_2014_adm2.adm2_name
-and country.title in ('Ethiopia', 'Bangladesh', 'Kenya', 'Senegal', 'Ghana', 'Tanzania', 'Liberia', 'Zambia', 'Malawi', 'Nepal', 'Mali', 'Mozambique', 'Rwanda', 'Uganda', 'Zimbabwe');
+set adm1_name = district.title
+from district
+where district.district_id = site.district_id;
 
---update tanzania, separate because in GAUL it is 'United Republic of Tanzania'
-update site
-set geom = gaul_2014_adm2.geom, adm0_name = gaul_2014_adm2.adm0_name, adm1_name = gaul_2014_adm2.adm1_name
-from gaul_2014_adm2, country
-where site.title = gaul_2014_adm2.adm2_name
-and country.title = 'Tanzania'
 
-update site
-SET adm0_name = 'Tanzania'
-WHERE adm0_name = 'United Republic of Tanzania' 
-
-update site
-set geom_point = gaul_2014_adm2.geom_point
-from gaul_2014_adm2, country
-where site.title = gaul_2014_adm2.adm2_name
-and country.title = 'Tanzania'
-
-update site
-set adm0_code = gaul_2014_adm2.adm0_code
-from gaul_2014_adm2, country
-where site.title = gaul_2014_adm2.adm2_name
-and country.title = 'Tanzania'
-
-update site
-set adm1_code = gaul_2014_adm2.adm1_code
-from gaul_2014_adm2, country
-where site.title = gaul_2014_adm2.adm2_name
-and country.title = 'Tanzania'
-
-update site
-set adm2_code = gaul_2014_adm2.adm2_code
-from gaul_2014_adm2, country
-where site.title = gaul_2014_adm2.adm2_name
-and country.title= 'Tanzania'
+update site set adm2_code = gaul_2014_adm2.adm2_code
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Ethiopia';
+update site set adm2_code = gaul_2014_adm2.adm2_code
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Bangladesh';
+update site set adm2_code = gaul_2014_adm2.adm2_code
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Kenya';
+update site set adm2_code = gaul_2014_adm2.adm2_code
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Senegal';
+update site set adm2_code = gaul_2014_adm2.adm2_code
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Ghana';
+update site set adm2_code = gaul_2014_adm2.adm2_code
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'United Republic of Tanzania';
+update site set adm2_code = gaul_2014_adm2.adm2_code
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Liberia';
+update site set adm2_code = gaul_2014_adm2.adm2_code
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Zambia';
+update site set adm2_code = gaul_2014_adm2.adm2_code
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Malawi';
+update site set adm2_code = gaul_2014_adm2.adm2_code
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Nepal';
+update site set adm2_code = gaul_2014_adm2.adm2_code
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Mali';
+update site set adm2_code = gaul_2014_adm2.adm2_code
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Mozambique';
+update site set adm2_code = gaul_2014_adm2.adm2_code
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Rwanda';
+update site set adm2_code = gaul_2014_adm2.adm2_code
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Uganda';
+update site set adm2_code = gaul_2014_adm2.adm2_code
+from gaul_2014_adm2 where site.title = gaul_2014_adm2.adm2_name
+where country.title = 'Zimbabwe';
 
 
 -- create view with all district and country data
