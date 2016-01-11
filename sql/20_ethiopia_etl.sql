@@ -1,6 +1,6 @@
 ﻿DROP TABLE IF EXISTS ethiopia_raw;
 DROP TABLE IF EXISTS ethiopia_updated;
-DROP TABLE IF EXISTS eth_geography;
+DROP TABLE IF EXISTS ethiopia_geography;
 -- TRUNCATE TABLE report_indicator;
 -- TRUNCATE TABLE report_organization;
 -- TRUNCATE TABLE report_site;
@@ -69,9 +69,9 @@ WHERE locations is null;
 
 
 
--- create table eth_geography
+-- create table ethiopia_geography
 -- table of unique geographies
-SELECT * INTO eth_geography
+SELECT * INTO ethiopia_geography
 FROM (
     Select distinct(a[3]) as admin2, a[1] as admin0, a[2] as admin1
     from (
@@ -90,14 +90,14 @@ order by 3) as geographies;
 -- populate country table
 INSERT INTO country (title)
 	select distinct(admin0)
-	FROM eth_geography;
+	FROM ethiopia_geography;
 
 
 -- populate district table
 INSERT INTO district (title, country_id)
 	SELECT distinct(admin1), country_id
-	FROM eth_geography
-	JOIN country ON ( country.title = eth_geography.admin0)
+	FROM ethiopia_geography
+	JOIN country ON ( country.title = ethiopia_geography.admin0)
 	WHERE admin1 IS NOT NULL
 	GROUP BY country_id, admin1;
 
@@ -105,14 +105,14 @@ INSERT INTO district (title, country_id)
 -- populate site table
 INSERT INTO site (district_id, title)
 	SELECT distinct(district_id), admin2
-	FROM eth_geography
-	JOIN district ON ( district.title = eth_geography.admin1)
+	FROM ethiopia_geography
+	JOIN district ON ( district.title = ethiopia_geography.admin1)
 	WHERE admin2 IS NOT NULL
 	GROUP BY district_id, admin2;
 
 
 -- geography table is no longer needed
-DROP TABLE eth_geography;
+DROP TABLE ethiopia_geography;
 
 
 -- populate organization table
