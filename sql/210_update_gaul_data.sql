@@ -968,4 +968,16 @@ LEFT JOIN site s ON (s.site_id = rl.site_id)
 GROUP BY o.organization_id
 ORDER BY country_title;
 
+
+-- create view to get all data for a given project
+CREATE VIEW summary_data_by_project AS
+SELECT data_id, r.report_id, r.title report_title, e.edition_id, e.year, i.indicator_id, i.title indicator_title, m.measure_id, m.title measure_title, v.value_id, v.title value_title, data
+FROM data
+JOIN report r ON (r.report_id = data.report_id)
+JOIN edition e ON (e.edition_id = data.edition_id)
+JOIN indicator i ON (i.indicator_id = data.indicator_id)
+JOIN measure m ON (m.measure_id = data.measure_id)
+JOIN value v ON (v.value_id = data.value_id)
+
+
 DROP SERVER fsp CASCADE;
