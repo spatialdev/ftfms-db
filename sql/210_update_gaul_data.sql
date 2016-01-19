@@ -977,7 +977,17 @@ JOIN report r ON (r.report_id = data.report_id)
 JOIN edition e ON (e.edition_id = data.edition_id)
 JOIN indicator i ON (i.indicator_id = data.indicator_id)
 JOIN measure m ON (m.measure_id = data.measure_id)
-JOIN value v ON (v.value_id = data.value_id)
+JOIN value v ON (v.value_id = data.value_id);
+
+
+-- create view to of summary statistics for M&E module
+CREATE VIEW summary_stats AS
+SELECT count(distinct r.report_id) reports,  count(distinct i.indicator_id) indicators, count(distinct country_id) countries, count(distinct organization_id) organizations
+FROM data
+JOIN report r ON (r.report_id = data.report_id)
+JOIN report_location rl ON (r.report_id = rl.report_id)
+JOIN report_organization ro ON (r.report_id = ro.report_id)
+JOIN indicator i ON (i.indicator_id = data.indicator_id)
 
 
 DROP SERVER fsp CASCADE;
