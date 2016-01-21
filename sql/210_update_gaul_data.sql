@@ -957,7 +957,7 @@ GROUP BY c.country_id, d.district_id, s.site_id, c.title, d.title, s.title;
 
 -- create view to get summary data by organization
 -- summary includes number of projects, and locations
-CREATE VIEW summary_data_by_organization AS
+CREATE VIEW me_summary_data_by_organization AS
 SELECT o.organization_id, o.title, count(distinct ro.report_id) report_count, count(distinct rl.country_id) country_count, count(distinct d.district_id) district_count, count(distinct s.site_id) site_count, array_agg(distinct c.title) country_title, array_agg(distinct d.title) district_title, array_agg(distinct s.title) site_title
 FROM organization o
 JOIN report_organization ro ON ( ro.organization_id = o.organization_id)
@@ -969,11 +969,17 @@ GROUP BY o.organization_id
 ORDER BY country_title;
 
 
--- create view to get all data for a given project
-CREATE VIEW summary_data_by_project AS
-SELECT data_id, r.report_id, r.title report_title, e.edition_id, e.year, i.indicator_id, i.title indicator_title, m.measure_id, m.title measure_title, v.value_id, v.title value_title, data
+-- create view to get all data for a given location
+CREATE VIEW me_summary_data_by_location AS
+SELECT data_id, r.report_id, r.title report_title, e.edition_id, e.year, i.indicator_id, i.title indicator_title, m.measure_id, m.title measure_title, v.value_id, v.title value_title, c.adm0_code, d.adm1_code, s.adm2_code, o.title, data
 FROM data
 JOIN report r ON (r.report_id = data.report_id)
+JOIN report_location rl ON (rl.report_id = data.report_id)
+LEFT JOIN country c ON (c.country_id = rl.country_id)
+LEFT JOIN district d ON (d.district_id = rl.district_id)
+LEFT JOIN site s ON (s.site_id = rl.site_id)
+LEFT JOIN report_organization ro ON (ro.report_id = r.report_id)
+JOIN organization o ON ( o.organization_id = ro.organization_id)
 JOIN edition e ON (e.edition_id = data.edition_id)
 JOIN indicator i ON (i.indicator_id = data.indicator_id)
 JOIN measure m ON (m.measure_id = data.measure_id)
@@ -981,13 +987,13 @@ JOIN value v ON (v.value_id = data.value_id);
 
 
 -- create view to of summary statistics for M&E module
-CREATE VIEW summary_stats AS
+CREATE VIEW me_summary_stats AS
 SELECT count(distinct r.report_id) reports,  count(distinct i.indicator_id) indicators, count(distinct country_id) countries, count(distinct organization_id) organizations
 FROM data
 JOIN report r ON (r.report_id = data.report_id)
 JOIN report_location rl ON (r.report_id = rl.report_id)
 JOIN report_organization ro ON (r.report_id = ro.report_id)
-JOIN indicator i ON (i.indicator_id = data.indicator_id)
+JOIN indicator i ON (i.indicator_id = data.indicator_id);
 
 
 DROP SERVER fsp CASCADE;
