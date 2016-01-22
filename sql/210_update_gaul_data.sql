@@ -996,4 +996,45 @@ JOIN report_organization ro ON (r.report_id = ro.report_id)
 JOIN indicator i ON (i.indicator_id = data.indicator_id);
 
 
+create view me_report_country as
+select distinct country_id, report_id from report_location;
+
+create view me_report_district as
+select distinct district_id, report_id from report_location where district_id is not null;
+
+create view me_report_site as
+select distinct site_id, report_id from report_location where site_id is not null;
+
+-- Get distinct list of indicators by adm0 code
+CREATE VIEW me_report_indicator_country AS
+SELECT distinct i.indicator_id, r.report_id, r.title as report_title, i.title as idicator_title, c.adm0_code
+FROM report r, me_report_country rc,  report_indicator ri, indicator i, country c
+where rc.country_id = c.country_id
+and rc.report_id = r.report_id
+and ri.report_id = r.report_id
+and ri.indicator_id = i.indicator_id;
+
+-- Get distinct list of indicators by adm1_code
+CREATE VIEW me_report_indicator_district AS
+SELECT i.indicator_id, r.report_id, r.title as report_title, i.title as idicator_title, d.adm1_code
+FROM report r, me_report_district rd,  report_indicator ri, indicator i, district d
+where rd.district_id = d.district_id
+and rd.report_id = r.report_id
+and ri.report_id = r.report_id
+and ri.indicator_id = i.indicator_id;
+
+--select distinct report_id, report_title, adm1_code from me_report_indicator_district where adm1_code in (select adm1_code from district where adm0_code = 94);
+
+-- Get distinct list of indicators by adm2_code
+CREATE VIEW me_report_indicator_site AS
+SELECT i.indicator_id, r.report_id, r.title as report_title, i.title as idicator_title, s.adm2_code
+FROM report r, me_report_site rs,  report_indicator ri, indicator i, site s
+where rs.site_id = s.site_id
+and rs.report_id = r.report_id
+and ri.report_id = r.report_id
+and ri.indicator_id = i.indicator_id;
+
+--select distinct report_id, report_title from me_report_indicator_site where adm2_code in (select adm2_code from site where adm1_code = 1325);
+
+
 DROP SERVER fsp CASCADE;
