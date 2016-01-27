@@ -68,7 +68,10 @@ UPDATE mali_updated
 SET locations = 'Mali'
 WHERE locations is null;
 
-
+-- update mali_updated for null measures
+UPDATE mali_updated
+SET measure = 'null'
+WHERE measure is null;
 
 -- create table mali_geography
 -- table of unique geographies
@@ -287,7 +290,7 @@ FROM value v, (
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2010)
 JOIN indicator i ON (i.title = dt.indicator[2])
-JOIN measure m ON (m.indicator_id = i.indicator_id)
+JOIN measure m ON (m.indicator_id = i.indicator_id and m.title = dt.measure)
 WHERE v.title = 'Target'
 GROUP BY 1,2,3,4,5,6;
 
@@ -304,7 +307,7 @@ FROM value v, (
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2010)
 JOIN indicator i ON (i.title = dt.indicator[2])
-JOIN measure m ON (m.indicator_id = i.indicator_id)
+JOIN measure m ON (m.indicator_id = i.indicator_id and m.title = dt.measure)
 WHERE v.title = 'Actual'
 GROUP BY 1,2,3,4,5,6;
 
@@ -321,7 +324,7 @@ FROM value v, (
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2011)
 JOIN indicator i ON (i.title = dt.indicator[2])
-JOIN measure m ON (m.indicator_id = i.indicator_id)
+JOIN measure m ON (m.indicator_id = i.indicator_id and m.title = dt.measure)
 WHERE v.title = 'Target'
 GROUP BY 1,2,3,4,5,6;
 
@@ -339,7 +342,7 @@ FROM value v, (
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2011)
 JOIN indicator i ON (i.title = dt.indicator[2])
-JOIN measure m ON (m.indicator_id = i.indicator_id)
+JOIN measure m ON (m.indicator_id = i.indicator_id and m.title = dt.measure)
 WHERE v.title = 'Actual'
 GROUP BY 1,2,3,4,5,6;
 
@@ -357,7 +360,7 @@ FROM value v, (
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2012)
 JOIN indicator i ON (i.title = dt.indicator[2])
-JOIN measure m ON (m.indicator_id = i.indicator_id)
+JOIN measure m ON (m.indicator_id = i.indicator_id and m.title = dt.measure)
 WHERE v.title = 'Target'
 GROUP BY 1,2,3,4,5,6;
 
@@ -375,7 +378,7 @@ FROM value v, (
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2012)
 JOIN indicator i ON (i.title = dt.indicator[2])
-JOIN measure m ON (m.indicator_id = i.indicator_id)
+JOIN measure m ON (m.indicator_id = i.indicator_id and m.title = dt.measure)
 WHERE v.title = 'Actual'
 GROUP BY 1,2,3,4,5,6;
 
@@ -393,7 +396,7 @@ FROM value v, (
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2013)
 JOIN indicator i ON (i.title = dt.indicator[2])
-JOIN measure m ON (m.indicator_id = i.indicator_id)
+JOIN measure m ON (m.indicator_id = i.indicator_id and m.title = dt.measure)
 WHERE v.title = 'Target'
 GROUP BY 1,2,3,4,5,6;
 
@@ -411,7 +414,7 @@ FROM value v, (
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2013)
 JOIN indicator i ON (i.title = dt.indicator[2])
-JOIN measure m ON (m.indicator_id = i.indicator_id)
+JOIN measure m ON (m.indicator_id = i.indicator_id and m.title = dt.measure)
 WHERE v.title = 'Actual'
 GROUP BY 1,2,3,4,5,6;
 
@@ -428,7 +431,7 @@ FROM value v, (
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2014)
 JOIN indicator i ON (i.title = dt.indicator[2])
-JOIN measure m ON (m.indicator_id = i.indicator_id)
+JOIN measure m ON (m.indicator_id = i.indicator_id and m.title = dt.measure)
 WHERE v.title = 'Target'
 GROUP BY 1,2,3,4,5,6;
 
@@ -445,7 +448,7 @@ FROM value v, (
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2014)
 JOIN indicator i ON (i.title = dt.indicator[2])
-JOIN measure m ON (m.indicator_id = i.indicator_id)
+JOIN measure m ON (m.indicator_id = i.indicator_id and m.title = dt.measure)
 WHERE v.title = 'Actual'
 GROUP BY 1,2,3,4,5,6;
 
@@ -462,7 +465,7 @@ FROM value v, (
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2015)
 JOIN indicator i ON (i.title = dt.indicator[2])
-JOIN measure m ON (m.indicator_id = i.indicator_id)
+JOIN measure m ON (m.indicator_id = i.indicator_id and m.title = dt.measure)
 WHERE v.title = 'Target'
 GROUP BY 1,2,3,4,5,6;
 
@@ -480,7 +483,7 @@ FROM value v, (
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2015)
 JOIN indicator i ON (i.title = dt.indicator[2])
-JOIN measure m ON (m.indicator_id = i.indicator_id)
+JOIN measure m ON (m.indicator_id = i.indicator_id and m.title = dt.measure)
 WHERE v.title = 'Actual'
 GROUP BY 1,2,3,4,5,6;
 
@@ -498,7 +501,7 @@ FROM value v, (
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2016)
 JOIN indicator i ON (i.title = dt.indicator[2])
-JOIN measure m ON (m.indicator_id = i.indicator_id)
+JOIN measure m ON (m.indicator_id = i.indicator_id and m.title = dt.measure)
 WHERE v.title = 'Target'
 GROUP BY 1,2,3,4,5,6;
 
@@ -516,7 +519,7 @@ FROM value v, (
 JOIN report r ON (r.title = dt.implementing_mechanism)
 JOIN edition e ON (e.report_id = r.report_id AND e.year = 2017)
 JOIN indicator i ON (i.title = dt.indicator[2])
-JOIN measure m ON (m.indicator_id = i.indicator_id)
+JOIN measure m ON (m.indicator_id = i.indicator_id and m.title = dt.measure)
 WHERE v.title = 'Target'
 GROUP BY 1,2,3,4,5,6;
 
@@ -532,6 +535,6 @@ FROM value v, (
 JOIN report r ON (r.title = dt.implementing_mechanism)
 LEFT JOIN edition e ON (e.report_id = r.report_id AND e.year = dt.baseline_year)
 JOIN indicator i ON (i.title = dt.indicator[2])
-JOIN measure m ON (m.indicator_id = i.indicator_id)
+JOIN measure m ON (m.indicator_id = i.indicator_id and m.title = dt.measure)
 WHERE v.title = 'Baseline'
 GROUP BY 1,2,3,4,5,6;
