@@ -988,7 +988,28 @@ JOIN value v ON (v.value_id = data.value_id);
 
 -- create view to of summary statistics for M&E module
 CREATE VIEW me_summary_stats AS
-SELECT count(distinct r.report_id) reports,  count(distinct i.indicator_id) indicators, count(distinct country_id) countries, count(distinct organization_id) organizations
+SELECT 'Implementing Mechanisms' title, count(distinct r.report_id) count, 'Projects reporting outcomes in the Feed The Future Monitoring System.' description
+FROM data
+JOIN report r ON (r.report_id = data.report_id)
+JOIN report_location rl ON (r.report_id = rl.report_id)
+JOIN report_organization ro ON (r.report_id = ro.report_id)
+JOIN indicator i ON (i.indicator_id = data.indicator_id)
+UNION
+SELECT 'Indicators' as title, count(distinct i.indicator_id), 'Feed The Future Indicators reported in 2015.'
+FROM data
+JOIN report r ON (r.report_id = data.report_id)
+JOIN report_location rl ON (r.report_id = rl.report_id)
+JOIN report_organization ro ON (r.report_id = ro.report_id)
+JOIN indicator i ON (i.indicator_id = data.indicator_id)
+UNION
+SELECT 'Regions' as title, count(distinct district_id), 'Regions that have ongoing Feed The Future projects'
+FROM data
+JOIN report r ON (r.report_id = data.report_id)
+JOIN report_location rl ON (r.report_id = rl.report_id)
+JOIN report_organization ro ON (r.report_id = ro.report_id)
+JOIN indicator i ON (i.indicator_id = data.indicator_id)
+UNION
+SELECT 'Implementing Partners' as title, count(distinct organization_id), 'Implementing Partners working on Feed The Future projects.'
 FROM data
 JOIN report r ON (r.report_id = data.report_id)
 JOIN report_location rl ON (r.report_id = rl.report_id)
