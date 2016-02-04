@@ -1014,7 +1014,7 @@ FROM data
 JOIN report r ON (r.report_id = data.report_id)
 JOIN report_location rl ON (r.report_id = rl.report_id)
 JOIN report_organization ro ON (r.report_id = ro.report_id)
-JOIN indicator i ON (i.indicator_id = data.indicator_id)
+JOIN indicator i ON (i.indicator_id = data.indicator_id);
 
 
 create view me_report_country as
