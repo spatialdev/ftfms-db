@@ -1,4 +1,12 @@
-﻿DROP TABLE IF EXISTS bangladesh_raw;
+﻿/*********************************************************************
+	Loads Bangladesh data into ME database
+
+	-- run show data_directory to identify where postgres stores data
+    -- copy the ftfms folder into that directory
+
+**********************************************************************/
+
+DROP TABLE IF EXISTS bangladesh_raw;
 DROP TABLE IF EXISTS bangladesh_updated;
 DROP TABLE IF EXISTS bangladesh_geography;
 -- TRUNCATE TABLE report_indicator;
@@ -52,7 +60,7 @@ locations,
 admin0,
 admin1,
 admin2,
-measure) FROM '/Users/sarahbindman/Desktop/ftfms/clean_bangladesh_12_18.csv'
+measure) FROM './ftfms/clean_bangladesh_12_18.csv'
 WITH DELIMITER ',' CSV HEADER;
 
 

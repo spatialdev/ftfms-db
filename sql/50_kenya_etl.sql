@@ -1,4 +1,12 @@
-﻿DROP TABLE IF EXISTS kenya_raw;
+﻿/*********************************************************************
+	Loads Kenya data into ME database
+
+	-- run show data_directory to identify where postgres stores data
+    -- copy the ftfms folder into that directory
+
+**********************************************************************/
+
+DROP TABLE IF EXISTS kenya_raw;
 DROP TABLE IF EXISTS kenya_updated;
 DROP TABLE IF EXISTS kenya_geography;
 -- TRUNCATE TABLE report_indicator;
@@ -52,7 +60,7 @@ locations,
 admin0,
 admin1,
 admin2,
-measure) FROM '/Users/sarahbindman/Desktop/ftfms/clean_kenya_12_18.csv'
+measure) FROM './ftfms/clean_kenya_12_18.csv'
 WITH DELIMITER ',' CSV HEADER;
 
 
@@ -206,7 +214,6 @@ ORDER BY 3 ) geo
 JOIN report ON (report.title = implementing_mechanism)
 JOIN site ON (site.title = admin2)
 GROUP BY 1,2;
-
 
 
 -- populate report location table

@@ -1,3 +1,11 @@
+/*********************************************************************
+	Loads Liberia data into ME database
+
+	-- run show data_directory to identify where postgres stores data
+    -- copy the ftfms folder into that directory
+
+**********************************************************************/
+
 DROP TABLE IF EXISTS liberia_raw;
 DROP TABLE IF EXISTS liberia_updated;
 DROP TABLE IF EXISTS liberia_geography;
@@ -53,7 +61,7 @@ locations,
 admin0,
 admin1,
 admin2,
-measure) FROM '/Users/sarahbindman/Desktop/ftfms/clean_liberia_12_18.csv'
+measure) FROM './ftfms/clean_liberia_12_18.csv'
 WITH DELIMITER ',' CSV HEADER;
 
 

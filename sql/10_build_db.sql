@@ -25,57 +25,55 @@ DROP TABLE IF EXISTS measure_value cascade;
 DROP TABLE IF EXISTS report_location cascade;
 DROP TABLE IF EXISTS data cascade;
 
-
+/*********************************************************************
+	Creating M&E Tables
+**********************************************************************/
 
 create table category(
-    category_id serial primary key not null,
-    title character varying not null
+    category_id serial primary key NOT NULL,
+    title character varying NOT NULL
 );
 
 
 create table codelist(
-    codelist_id serial primary key not null,
+    codelist_id serial primary key NOT NULL,
     code_id int,
     parent_id int,
-    list character varying not null,
-    code character varying not null
+    list character varying NOT NULL,
+    code character varying NOT NULL
 );
 
 
-
 create table megasite(
-    megasite_id serial primary key not null,
+    megasite_id serial primary key NOT NULL,
     code character varying,
-    title character varying not null,
+    title character varying NOT NULL,
     first_name character varying,
     last_name character varying,
     email character varying
 );
 
 
-
 create table country(
-    country_id serial primary key not null,
-    megasite_id int references megasite(megasite_id) not null default 1,
+    country_id serial primary key NOT NULL,
+    megasite_id int references megasite(megasite_id) NOT NULL DEFAULT 1,
     code character varying,
-    title character varying not null,
+    title character varying NOT NULL,
     description character varying,
     image_path character varying
 );
 
 
-
 create table district(
-    district_id serial primary key not null,
-    country_id int not null references country(country_id),
-    title character varying not null
+    district_id serial primary key NOT NULL,
+    country_id int NOT NULL references country(country_id),
+    title character varying NOT NULL
 );
 
 
-
 create table indicator(
-    indicator_id serial primary key not null,
-    title character varying not null,
+    indicator_id serial primary key NOT NULL,
+    title character varying NOT NULL,
     code character varying,
     type character varying,
     unit character varying
@@ -83,149 +81,150 @@ create table indicator(
 
 
 create table interval(
-    interval_id serial primary key not null,
-    title character varying not null
+    interval_id serial primary key NOT NULL,
+    title character varying NOT NULL
 );
 
 
 create table interval_range(
-    interval_range_id serial primary key not null,
-    interval_id int not null references interval(interval_id),
-    title character varying not null,
-    from_month int not null,
-    from_day int not null,
-    to_month int not null,
-    to_day int not null
+    interval_range_id serial primary key NOT NULL,
+    interval_id int NOT NULL references interval(interval_id),
+    title character varying NOT NULL,
+    from_month int NOT NULL,
+    from_day int NOT NULL,
+    to_month int NOT NULL,
+    to_day int NOT NULL
 );
 
 
-
 create table measure(
-    measure_id serial primary key not null,
-    indicator_id int not null references indicator(indicator_id),
-    category_id int references category(category_id) not null default 1,
-    title character varying not null,
+    measure_id serial primary key NOT NULL,
+    indicator_id int NOT NULL references indicator(indicator_id),
+    category_id int references category(category_id) NOT NULL DEFAULT 1,
+    title character varying NOT NULL,
     code character varying
 );
 
 
-
 create table report(
-    report_id serial primary key not null,
-    interval_id int not null references interval(interval_id),
-    title character varying not null,
+    report_id serial primary key NOT NULL,
+    interval_id int NOT NULL references interval(interval_id),
+    title character varying NOT NULL,
     name character varying,
     email character varying,
     status character varying,
     start_date timestamp with time zone,
     end_date timestamp with time zone,
     created_by character varying,
-    created_date timestamp with time zone default current_timestamp
+    created_date timestamp with time zone DEFAULT current_timestamp
 );
 
+
 create table note(
-    note_id serial primary key not null,
-    report_id int not null references report(report_id),
-    note character varying not null
+    note_id serial primary key NOT NULL,
+    report_id int NOT NULL references report(report_id),
+    note character varying NOT NULL
 );
 
 
 create table organization(
-    organization_id serial primary key not null,
-    title character varying not null
+    organization_id serial primary key NOT NULL,
+    title character varying NOT NULL
 );
 
 
-
 create table edition(
-    edition_id serial primary key not null,
-    report_id int not null references report(report_id),
-    interval_range_id int not null references interval_range(interval_range_id),
-    year int not null,
-    draft bit not null default cast(1 as bit(1)),
+    edition_id serial primary key NOT NULL,
+    report_id int NOT NULL references report(report_id),
+    interval_range_id int NOT NULL references interval_range(interval_range_id),
+    year int NOT NULL,
+    draft boolean NOT NULL DEFAULT true,
     revised_by character varying,
     revised_date timestamp with time zone
 );
 
 
 create table report_codelist(
-    report_id int not null references report(report_id),
-    codelist_id int not null references codelist(codelist_id),
+    report_id int NOT NULL references report(report_id),
+    codelist_id int NOT NULL references codelist(codelist_id),
 
     PRIMARY KEY(report_id, codelist_id)
 );
 
 
-
 create table report_indicator(
-    report_id int not null references report(report_id),
-    indicator_id int not null references indicator(indicator_id),
+    report_id int NOT NULL references report(report_id),
+    indicator_id int NOT NULL references indicator(indicator_id),
 
     PRIMARY KEY(report_id, indicator_id)
 );
 
 
 create table report_organization(
-    report_id int not null references report(report_id),
-    organization_id int not null references organization(organization_id),
-    lead bit not null default cast(0 as bit(1)),
+    report_id int NOT NULL references report(report_id),
+    organization_id int NOT NULL references organization(organization_id),
+    lead boolean NOT NULL DEFAULT false,
 
     PRIMARY KEY(report_id, organization_id,lead)
 );
 
+
 create table site(
-    site_id serial primary key not null,
+    site_id serial primary key NOT NULL,
     village_id character varying,
-    title character varying not null,
+    title character varying NOT NULL,
     type character varying,
     image_path character varying,
---    point geometry not null,
+--  point geometry NOT NULL,
     district_id int references district(district_id)
 );
 
 
 create table report_site(
-    report_id int not null references report(report_id),
-    site_id int not null references site(site_id),
+    report_id int NOT NULL references report(report_id),
+    site_id int NOT NULL references site(site_id),
 
     PRIMARY KEY(report_id, site_id)
 );
 
 
-create table report_location(
-    report_id int not null references report(report_id),
-    country_id int not null references country(country_id),
-    district_id int references district(district_id),
-    site_id int references site(site_id)
-);
-
-
 create table value(
-    value_id serial primary key not null,
-    title character varying not null,
-    type character varying not null check (type='value list' OR type='boolean' OR type='decimal' OR type='text' OR type='integer'),
-    fixed bit not null default cast(0 as bit(1))
+    value_id serial primary key NOT NULL,
+    title character varying NOT NULL,
+    type character varying NOT NULL check (type='value list' OR type='boolean' OR type='decimal' OR type='text' OR type='integer'),
+    fixed boolean NOT NULL DEFAULT false
 );
 
 
 create table measure_value(
-    measure_id int not null references measure(measure_id),
-    value_id int not null references value(value_id),
+    measure_id int NOT NULL references measure(measure_id),
+    value_id int NOT NULL references value(value_id),
 
     PRIMARY KEY(measure_id, value_id)
 );
 
 
 create table data(
-    data_id serial primary key not null,
-    report_id int not null references report(report_id),
+    data_id serial primary key NOT NULL,
+    report_id int NOT NULL references report(report_id),
     edition_id int references edition(edition_id),
-    indicator_id int not null references indicator(indicator_id),
-    measure_id int references measure(measure_id) not null,
-    value_id int not null references value(value_id),
+    indicator_id int NOT NULL references indicator(indicator_id),
+    measure_id int references measure(measure_id) NOT NULL,
+    value_id int NOT NULL references value(value_id),
     data character varying,
-    exceeds_margin bit not null default cast(0 as bit(1))
+    exceeds_margin boolean NOT NULL DEFAULT false
 );
+
+
+
+
+/*********************************************************************
+	Creating foreign tables of Gaul Data
+
+	-- update host, dbname, port, user and password with the correct
+	-- server credentials
+
+**********************************************************************/
 
 
 CREATE EXTENSION postgres_fdw;
@@ -295,7 +294,7 @@ INSERT INTO codelist (list, code) VALUES ('null', 'null');
 -- interval at which data is reported
 INSERT INTO interval (title) VALUES ('annually');
 
-
+--po
 INSERT INTO value (title, type) VALUES ('Baseline', 'integer');
 INSERT INTO value (title, type) VALUES ('Target', 'integer');
 INSERT INTO value (title, type) VALUES ('Actual', 'integer');

@@ -1,5 +1,14 @@
---The raw table was altered prior to importing to postgres, in the location column,
---all '->' where changed to '-> ->' because the admin1 match admin2 GAUL data
+/*********************************************************************
+	Loads Malawi data into ME database
+
+	-- run show data_directory to identify where postgres stores data
+    -- copy the ftfms folder into that directory
+
+    -- The raw table was altered prior to importing to postgres,
+    -- in the location column, all '->' where changed to
+    -- '-> ->' because the admin1 match admin2 GAUL data
+
+**********************************************************************/
 
 
 DROP TABLE IF EXISTS malawi_raw;
@@ -56,7 +65,7 @@ locations,
 admin0,
 admin1,
 admin2,
-measure) FROM '/Users/sarahbindman/Desktop/ftfms/clean_malawi_12_18.csv'
+measure) FROM './ftfms/clean_malawi_12_18.csv'
 WITH DELIMITER ',' CSV HEADER;
 
 

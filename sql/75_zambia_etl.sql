@@ -1,6 +1,14 @@
 --THIS DATASET HAS ISSUES, SKIP FOR NOW
 -- DATA FROM ZIMBABWE AND SENEGAL
 
+/*********************************************************************
+	Loads Zambia data into ME database
+
+	-- run show data_directory to identify where postgres stores data
+    -- copy the ftfms folder into that directory
+
+**********************************************************************/
+
 
 DROP TABLE IF EXISTS zambia_raw;
 DROP TABLE IF EXISTS zambia_updated;
@@ -56,7 +64,7 @@ locations,
 admin0,
 admin1,
 admin2,
-measure) FROM '/Users/sarahbindman/Desktop/ftfms/clean_zambia_12_18.csv'
+measure) FROM './ftfms/clean_zambia_12_18.csv'
 WITH DELIMITER ',' CSV HEADER;
 
 

@@ -1,4 +1,12 @@
-﻿DROP TABLE IF EXISTS ethiopia_raw;
+﻿/*********************************************************************
+	Loads Ethiopia data into ME database
+
+	-- run show data_directory to identify where postgres stores data
+    -- copy the ftfms folder into that directory
+
+**********************************************************************/
+
+DROP TABLE IF EXISTS ethiopia_raw;
 DROP TABLE IF EXISTS ethiopia_updated;
 DROP TABLE IF EXISTS ethiopia_geography;
 -- TRUNCATE TABLE report_indicator;
@@ -42,6 +50,7 @@ target_2014,
 target_2015,
 target_2016,
 target_2017,
+target_2018,
 actual_2012,
 actual_2013,
 actual_2014,
@@ -51,7 +60,7 @@ locations,
 admin0,
 admin1,
 admin2,
-measure) FROM '/Users/admin/Desktop/ftfms/clean_ethiopia_12_18.csv'
+measure) FROM  './ftfms/clean_ethiopia_12_18.csv'
 WITH DELIMITER ',' CSV HEADER;
 
 
@@ -207,7 +216,6 @@ JOIN site ON (site.title = admin2)
 GROUP BY 1,2;
 
 
-
 -- populate report location table
 INSERT INTO report_location (report_id, country_id, district_id, site_id)
 SELECT  distinct(report_id), country.country_id, district.district_id, site_id
@@ -230,6 +238,7 @@ SELECT  distinct(report_id), country.country_id, district.district_id, site_id
 	GROUP by 1,2,3,4;
 
 
+
 -- populate measure table
 -- create a temporary table of all measures and indicators without measures
 SELECT distinct(measure), indicator.indicator_id
@@ -241,7 +250,6 @@ INTO measure_temp
     ) as dt(a)
     JOIN indicator ON (indicator.title = a[2])
     GROUP BY 1,2;
-
 
 -- update indicators without measures to be linked to a measure with title null
 UPDATE measure_temp

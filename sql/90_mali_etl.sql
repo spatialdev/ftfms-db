@@ -1,3 +1,11 @@
+/*********************************************************************
+	Loads Mali data into ME database
+
+	-- run show data_directory to identify where postgres stores data
+    -- copy the ftfms folder into that directory
+
+**********************************************************************/
+
 DROP TABLE IF EXISTS mali_raw;
 DROP TABLE IF EXISTS mali_updated;
 DROP TABLE IF EXISTS mali_geography;
@@ -52,7 +60,7 @@ locations,
 admin0,
 admin1,
 admin2,
-measure) FROM '/Users/sarahbindman/Desktop/ftfms/clean_mali_12_18.csv'
+measure) FROM './ftfms/clean_mali_12_18.csv'
 WITH DELIMITER ',' CSV HEADER;
 
 
