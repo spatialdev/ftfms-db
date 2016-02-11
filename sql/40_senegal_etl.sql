@@ -60,7 +60,7 @@ locations,
 admin0,
 admin1,
 admin2,
-measure) FROM './ftfms/clean_senegal_12_18.csv'
+measure) FROM './ftfms/senegal.csv'
 WITH DELIMITER ',' CSV HEADER;
 
 
