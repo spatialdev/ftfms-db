@@ -1,7 +1,7 @@
 ﻿/*********************************************************************
 	Loads Ethiopia data into ME database
 
-	-- run show data_directory to identify where postgres stores data
+	-- run ' show data_directory ' to identify where postgres stores data
     -- copy the ftfms folder into that directory
 
 **********************************************************************/

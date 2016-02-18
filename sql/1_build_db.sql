@@ -2,6 +2,8 @@
 CREATE SCHEMA public;
 
 CREATE EXTENSION postgis;
+DROP EXTENSION IF EXISTS postgres_fdw;
+CREATE EXTENSION postgres_fdw;
 
 DROP TABLE IF EXISTS category cascade;
 DROP TABLE IF EXISTS codelist cascade;
@@ -25,8 +27,15 @@ DROP TABLE IF EXISTS measure_value cascade;
 DROP TABLE IF EXISTS report_location cascade;
 DROP TABLE IF EXISTS data cascade;
 
+
+DROP TABLE IF EXISTS gaul_2014_adm0;
+DROP TABLE IF EXISTS gaul_2014_adm1;
+DROP TABLE IF EXISTS gaul_2014_adm2;
+
 /*********************************************************************
+
 	Creating M&E Tables
+
 **********************************************************************/
 
 create table category(
@@ -204,6 +213,14 @@ create table measure_value(
 );
 
 
+create table report_location(
+    report_id int NOT NULL references report(report_id),
+    country_id int NOT NULL references country(country_id),
+    district_id int references district(district_id),
+    site_id int references site(site_id)
+);
+
+
 create table data(
     data_id serial primary key NOT NULL,
     report_id int NOT NULL references report(report_id),
@@ -215,68 +232,6 @@ create table data(
     exceeds_margin boolean NOT NULL DEFAULT false
 );
 
-
-
-
-/*********************************************************************
-	Creating foreign tables of Gaul Data
-
-	-- update host, dbname, port, user and password with the correct
-	-- server credentials
-
-**********************************************************************/
-
-
-CREATE EXTENSION postgres_fdw;
-
-CREATE SERVER fsp FOREIGN DATA WRAPPER postgres_fdw OPTIONS(host 'host', dbname 'dbname', port '5432');
-CREATE USER MAPPING FOR postgres SERVER fsp OPTIONS (user 'user', password 'password');
-CREATE FOREIGN TABLE gaul_2014_adm0
-(
-  adm0_name character varying(100),
-  geom geometry(MultiPolygon,4326),
-  bbox geometry(Geometry,4326),
-  gaul_2014_adm0 integer,
-  geom_point geometry(Geometry,4326)
-) SERVER fsp;
-
-CREATE FOREIGN TABLE gaul_2014_adm1
-(
-  status character varying(37),
-  disp_area character varying(3),
-  adm1_code integer,
-  adm1_name character varying(100),
-  str1_year integer,
-  exp1_year integer,
-  adm0_code integer,
-  adm0_name character varying(100),
-  shape_leng numeric,
-  shape_area numeric,
-  geom geometry(MultiPolygon,4326),
-  bbox geometry(Geometry,4326),
-  geom_point geometry(Geometry,4326),
-  population integer
-) SERVER fsp;
-
-CREATE FOREIGN TABLE gaul_2014_adm2
-(
-  adm2_code integer,
-  adm2_name character varying(100),
-  status character varying(37),
-  disp_area character varying(3),
-  str_year integer,
-  exp_year integer,
-  adm0_code integer,
-  adm0_name character varying(100),
-  adm1_code integer,
-  adm1_name character varying(100),
-  shape_leng numeric,
-  shape_area numeric,
-  geom geometry(MultiPolygon,4326),
-  bbox geometry(Geometry,4326),
-  geom_point geometry(Geometry,4326),
-  population integer
-) SERVER fsp;
 
 
 -- add null category to the category table
@@ -294,7 +249,7 @@ INSERT INTO codelist (list, code) VALUES ('null', 'null');
 -- interval at which data is reported
 INSERT INTO interval (title) VALUES ('annually');
 
---po
+--populate value table
 INSERT INTO value (title, type) VALUES ('Baseline', 'integer');
 INSERT INTO value (title, type) VALUES ('Target', 'integer');
 INSERT INTO value (title, type) VALUES ('Actual', 'integer');
@@ -303,3 +258,61 @@ INSERT INTO value (title, type) VALUES ('Actual', 'integer');
 -- populate interval_range table
 INSERT INTO interval_range (interval_id, title,from_month, from_day, to_month, to_day)
 VALUES (1, 'Full Year', 1, 1, 12, 31);
+
+
+
+/*********************************************************************
+
+	Create GAUL tables
+	-- Populate GAUL tables using external dump
+
+**********************************************************************/
+
+
+CREATE TABLE gaul_2014_adm0
+(
+  adm0_name character varying(100),
+  geom geometry(MultiPolygon,4326),
+  id integer,
+  bbox geometry(Geometry,4326),
+  gaul_2014_adm0 integer,
+  geom_point geometry(Geometry,4326)
+);
+
+CREATE TABLE gaul_2014_adm1 (
+  status character varying(37),
+  disp_area character varying(3),
+  adm1_code integer,
+  adm1_name character varying(100),
+  str1_year integer,
+  exp1_year integer,
+  adm0_code integer,
+  adm0_name character varying(100),
+  shape_leng numeric,
+  shape_area numeric,
+  geom geometry(MultiPolygon,4326),
+  id integer,
+  bbox geometry(Geometry,4326),
+  geom_point geometry(Geometry,4326),
+  population integer
+);
+
+CREATE TABLE gaul_2014_adm2 (
+  adm2_code integer,
+  adm2_name character varying(100),
+  status character varying(37),
+  disp_area character varying(3),
+  str_year integer,
+  exp_year integer,
+  adm0_code integer,
+  adm0_name character varying(100),
+  adm1_code integer,
+  adm1_name character varying(100),
+  shape_leng numeric,
+  shape_area numeric,
+  geom geometry(MultiPolygon,4326),
+  id integer,
+  bbox geometry(Geometry,4326),
+  geom_point geometry(Geometry,4326),
+  population integer
+);

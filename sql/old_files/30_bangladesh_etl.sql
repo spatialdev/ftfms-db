@@ -20,7 +20,7 @@ CREATE TABLE bangladesh_raw
   im_number text,
   baseline_year integer,
   baseline_value double precision,
-  target_2010 double precision,
+  target_2010 double parecision,
   actual_2010 double precision,
   target_2011 double precision,
   actual_2011 double precision,
