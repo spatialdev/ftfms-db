@@ -1,8 +1,13 @@
 
 /************************************************************************
 
-  -- Create a temporary table of countrie to ETL
-  -- Add the lowercase name, capitalized name and file path to the list below to add it to the ETL
+    Run ETL for all data
+
+    1. run show data_directory to identify data directory for postgres and put ftfms folder
+    of data to ETL inside the directory
+    2. Add the lowercase name, capitalized name and file path to the list below to a country to the ETL
+
+  -- Script will reate a table of countries to ETL
 
 *************************************************************************/
 
@@ -39,8 +44,8 @@ INSERT INTO countries_to_ETL_temp VALUES ('ghana', 'Ghana', 'ftfms/ghana.csv');
 
 /************************************************************************
 
-  -- Loop through each of the countries in the temporary to run ETL into
-  -- the FTFMS database
+   The script will loop through each of the countries in the
+   ETL table to insert each countrys data into the FTFMS database
 
 *************************************************************************/
 
@@ -50,7 +55,6 @@ DECLARE
     country_title character varying;
     country_capital_title character varying;
     file_path character varying;
-
 
 BEGIN
 
@@ -242,26 +246,26 @@ BEGIN
                 FROM report_organization;
 
 
--- NOT USING THIS TABLE BECAUSE IT CONFLICTS WITH REPORT_LOCATION
---    -- populate report site table
---    INSERT INTO report_site (report_id, site_id)
---    SELECT distinct(report_id), site_id
---    FROM (
---        Select distinct(a[3]) as admin2, a[1] as admin0, a[2] as admin1, implementing_mechanism
---        from (
---            select regexp_split_to_array(locations, '->'), -- split into multiple columns
---            implementing_mechanism
---            from (
---            SELECT implementing_mechanism,
---            regexp_split_to_table(country_updated.locations, E'; ') AS locations -- split into multiple rows
---            FROM country_updated
---            ) as parse_country_updated
---        ) as dt(a)
---    GROUP BY 1,2,3,4
---    ORDER BY 3 ) geo
---    JOIN report ON (report.title = implementing_mechanism)
---    JOIN site ON (site.title = admin2)
---    GROUP BY 1,2;
+    -- NOT USING THIS TABLE BECAUSE IT CONFLICTS WITH REPORT_LOCATION
+    --    -- populate report site table
+    --    INSERT INTO report_site (report_id, site_id)
+    --    SELECT distinct(report_id), site_id
+    --    FROM (
+    --        Select distinct(a[3]) as admin2, a[1] as admin0, a[2] as admin1, implementing_mechanism
+    --        from (
+    --            select regexp_split_to_array(locations, '->'), -- split into multiple columns
+    --            implementing_mechanism
+    --            from (
+    --            SELECT implementing_mechanism,
+    --            regexp_split_to_table(country_updated.locations, E'; ') AS locations -- split into multiple rows
+    --            FROM country_updated
+    --            ) as parse_country_updated
+    --        ) as dt(a)
+    --    GROUP BY 1,2,3,4
+    --    ORDER BY 3 ) geo
+    --    JOIN report ON (report.title = implementing_mechanism)
+    --    JOIN site ON (site.title = admin2)
+    --    GROUP BY 1,2;
 
 
     -- populate report location table
@@ -339,7 +343,7 @@ BEGIN
 
     /************************************************************************
 
-      Load data into data table
+      Script will load data into "data" table
 
     *************************************************************************/
 

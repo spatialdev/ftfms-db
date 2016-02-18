@@ -264,7 +264,9 @@ VALUES (1, 'Full Year', 1, 1, 12, 31);
 /*********************************************************************
 
 	Create GAUL tables
-	-- Populate GAUL tables using external dump
+
+	1. GAUL tables need to be populated.
+	This can be done using an external dump file
 
 **********************************************************************/
 
