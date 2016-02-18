@@ -210,7 +210,7 @@ BEGIN
     -- populate edition table
     INSERT INTO edition (report_id, interval_range_id, year)
         SELECT report_id, 1 as interval_range_id,
-        regexp_split_to_table('2010; 2011; 2012; 2013; 2014; 2015; 2016; 2017; 2018', E'; ')::int AS year
+        regexp_split_to_table('2008; 2009; 2010; 2011; 2012; 2013; 2014; 2015; 2016; 2017; 2018', E'; ')::int AS year
         FROM report
         EXCEPT
             SELECT report_id, interval_range_id, year
@@ -624,6 +624,21 @@ BEGIN
     ) AS dt(measure, implementing_mechanism, target_2017, indicator)
     JOIN report r ON (r.title = dt.implementing_mechanism)
     JOIN edition e ON (e.report_id = r.report_id AND e.year = 2017)
+    JOIN indicator i ON (i.title = dt.indicator[2])
+    JOIN measure m ON (m.indicator_id = i.indicator_id and m.title = dt.measure)
+    WHERE v.title = 'Target'
+    GROUP BY 1,2,3,4,5,6;
+
+    -- load in data for target 2018
+    -- edition year is 2018
+    INSERT INTO data (report_id, edition_id, indicator_id, value_id, data, measure_id)
+    SELECT distinct(r.report_id), e.edition_id, i.indicator_id, v.value_id, target_2018 as data, m.measure_id
+    FROM value v, (
+        select measure, implementing_mechanism, target_2018, regexp_split_to_array(indicator, ':')
+        from country_updated
+    ) AS dt(measure, implementing_mechanism, target_2018, indicator)
+    JOIN report r ON (r.title = dt.implementing_mechanism)
+    JOIN edition e ON (e.report_id = r.report_id AND e.year = 2018)
     JOIN indicator i ON (i.title = dt.indicator[2])
     JOIN measure m ON (m.indicator_id = i.indicator_id and m.title = dt.measure)
     WHERE v.title = 'Target'

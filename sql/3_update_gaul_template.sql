@@ -1060,6 +1060,3 @@ where rs.site_id = s.site_id
 and rs.report_id = r.report_id
 and ri.report_id = r.report_id
 and ri.indicator_id = i.indicator_id;
-
-
---DROP SERVER fsp CASCADE;
