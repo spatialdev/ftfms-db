@@ -339,7 +339,7 @@ WHERE title in ('Balaka', 'Blantyre', 'Chikwawa', 'Chiradzulu', 'Machinga', 'Man
 AND adm0_name = 'Malawi';
 
 UPDATE site
-SET adm1_name = 'Central Region'
+SET adm1_name = 'Centselecral Region'
 WHERE title in ('Dedza', 'Dowa','Kasungu', 'Lilongwe', 'Mchinji', 'Nkhotakota', 'Ntcheu', 'Ntchisi', 'Salima' )
 AND adm0_name = 'Malawi';
 
@@ -885,6 +885,19 @@ $$ LANGUAGE plpgsql;
 
 
 select * from FTFMS_GAUL_SITE_UPDATE();
+
+-- remove duplication in site and report_location table created from GUAL updates
+update report_location rl
+set site_id =
+	(select site_id from site where site_id =
+	(select site_id from site where adm2_code = (select adm2_code from site where site_id = rl.site_id) order by site_id limit 1));
+
+-- delete duplicate sites
+delete from site where site_id IN (
+select site_id from site where site_id is not null
+except
+select site_id from report_location
+where site_id is not null);
 
 
 -- CREATE view with all district and country data
