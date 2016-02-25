@@ -1,0 +1,122 @@
+============
+##Loading pgrestapi Project data into local VM host PostGIS
+—CICU
+shp2pgsql -s 4326 -d -I CICU.shp npl_cicu | psql -U postgres -p 5433 -p 5433 -d pgrestapi  h 127.0.0.1
+
+—-CMCM
+shp2pgsql -s 4326 -d -I CMCM.shp npl_cmcm | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+—CTIP
+shp2pgsql -s 4326 -d -I CTIP.shp npl_ctip | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+—IRMI
+shp2pgsql -s 4326 -d -I IRMI.shp npl_irmi | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+—Sajhedari
+shp2pgsql -s 4326 -d -I SAJHEDARI.shp npl_sajhedari | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+—SPPLEP
+shp2pgsql -s 4326 -d -I SPPELP.shp npl_sppelp | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+—H4L_LOGISTIC
+shp2pgsql -s 4326 -d -I H4L_LOGISTIC.shp npl_h4l_logistic | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+—HEO_FACTS
+shp2pgsql -s 4326 -d -I FACTS.shp npl_facts | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+—HEO_GGMS
+shp2pgsql -s 4326 -d -I GGMS.shp npl_ggms | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+—H4L_CORE
+shp2pgsql -s 4326 -d -I H4L_CORE.shp npl_H4L_CORE | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+
+
+
+—HEO_HC3
+shp2pgsql -s 4326 -d -I HC3.shp npl_hc3 | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+—SAFEWASH2
+shp2pgsql -s 4326 -d -I SAFEWASH_II.shp npl_safewash2 | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+—SIFPO
+shp2pgsql -s 4326 -d -I SIFPO_IPF.shp npl_sfipo_ipf | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+—HEO_SUAAHARA
+shp2pgsql -s 4326 -d -I SUAAHARA.shp npl_suaahara| psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+—SEED BUS LITERACY
+shp2pgsql -s 4326 -d -I BUS_LITERACY.shp npl_bus_literacy | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+—CSISA
+shp2pgsql -s 4326 -d -I CSISA-NP.shp npl_csisa_np | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+—HARIYOBAN
+shp2pgsql -s 4326 -d -I HARIYOBAN.shp npl_hariyoban | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+—ICCA
+shp2pgsql -s 4326 -d -I ICCA.shp npl_icca | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+—IPM_IL
+shp2pgsql -s 4326 -d -I IPM-IL.shp npl_ipm_il | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+
+—KISAN
+shp2pgsql -s 4326 -d -I KISAN.shp npl_kisan | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+
+
+—-nepal admin
+shp2pgsql -s 4326 -d -I Nepal_admin4_simp.shp nepal_admin | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+—pop stats
+shp2pgsql -s 4326 -d -I PopulationStats.shp pop_stats | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+shp2pgsql -s 4326 -d -I FTF_ZOI.shp ftf_zoi | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+
+shp2pgsql -s 4326 -d -I npl_settlements_pcode.shp settlements | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+—Nepal roads
+
+shp2pgsql -s 4326 -d -I nepal_roads.shp nepal_roads | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+
+
+
+—ETHIOPIA
+shp2pgsql -s 4326 -d -I ethiopia_roads.shp ethopia_roads | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+—ETHIOPIA PROJECTS
+
+
+shp2pgsql -s 4326 -d -I ftf_elap.shp eth_elap | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+shp2pgsql -s 4326 -d -I ftf_engine.shp eth_engine | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+shp2pgsql -s 4326 -d -I ftf_grad.shp eth_grad | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+shp2pgsql -s 4326 -d -I ftf_lgp.shp eth_lgp | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+shp2pgsql -s 4326 -d -I ftf_mashav.shp eth_mashav | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+shp2pgsql -s 4326 -d -I ftf_prime.shp eth_prime | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+shp2pgsql -s 4326 -d -I ftf_pulls eth_pulls | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+shp2pgsql -s 4326 -d -I ftf_push eth_push | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+shp2pgsql -s 4326 -d -I ftf_water.shp eth_water | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+
+
+—SENEGAL
+
+shp2pgsql -s 4326 -d -I senegal_roads.shp senegal_roads | psql -U postgres -p 5433 -d pgrestapi -h 127.0.0.1
+
+
+
+
+
+
+
+
